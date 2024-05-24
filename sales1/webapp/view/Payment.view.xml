@@ -1,0 +1,227 @@
+<mvc:View
+    controllerName="sync.zec.sales1.controller.Payment"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    displayBlock="true">
+    <Page>
+        <headerContent>
+            <Bar>
+                <contentMiddle>
+                    <Title text="결제화면" />
+                </contentMiddle>
+                <contentRight>
+                    <Button text="계속 쇼핑하기" press="onNavBack" type="Emphasized" />
+                </contentRight>
+            </Bar>
+        </headerContent>
+
+        <content>
+    <Wizard id="paymentWizard" showNextButton="false" >
+        <WizardStep title="{i18n>itemList}" id="itemsStep" icon="sap-icon://list">
+            <VBox>
+                <List id="itemsList" items="{cart>/cartItems}">
+                    <CustomListItem>
+                        <HBox justifyContent="SpaceBetween" width="100%">
+                            <HBox>
+                            <Text text="{ path: 'cart>Quantity', type: 'sap.ui.model.odata.type.Decimal'} x" />
+                            <Image src="{cart>Image}" width="50px" height="50px"/>
+                            <VBox>
+                                <Text text="{cart>Maktx}" />
+                            </VBox>
+                            </HBox>
+                            <VBox alignItems="End">
+                            <ObjectNumber number="{
+                                parts:[
+                                    {path : 'cart>Netpr'},
+                                    {path : 'cart>Waers'}
+                                    ],
+                                    type:'sap.ui.model.type.Currency',
+                                    formatOptions:{showMeasure: false}
+                                }"
+                                numberUnit="{cart>Waers}" class="sapUiNoMargin"/>
+                            </VBox>
+                        </HBox>
+                    </CustomListItem>
+                </List>
+                <HBox justifyContent="SpaceBetween"  class="totalBox" alignItems="Center">
+                    <Title text="총 금액 : " />
+                    <!-- <Text text="{paymentCart>/totalPrice} KRW" /> -->
+                    <ObjectNumber number="{
+                        parts:[ 
+                            {path : 'cart>/totalPrice'},
+                            {path : 'cart>/cartItems/0/Waers'}
+                        ],
+                        type:'sap.ui.model.type.Currency',
+                        formatOptions:{showMeasure: false}
+                    }"
+                    numberUnit="{cart>/cartItems/0/Waers}" class="sapUiNoMargin"/>
+                </HBox>
+                <Button text="단계 2" press="onNextStep" />
+            </VBox>
+        </WizardStep>
+        <WizardStep id="paymentTypeStep" title="{i18n>paymentType}" >
+            <VBox>
+                <Text text="결제방식을 선택해주세요 : " />
+                <SegmentedButton select="onPaymentTypeSelect" >
+                    <buttons>
+                        <Button text="카드">
+                            <customData>
+                                <core:CustomData key="paymentType" value="Card"/>
+                            </customData>
+                        </Button>
+                        <Button text="카카오페이">
+                            <customData>
+                                <core:CustomData key="paymentType" value="KakaoPay"/>
+                            </customData>
+                        </Button>
+                    </buttons>
+                </SegmentedButton>
+            </VBox>
+            <Button text="단계 3" press="onNextStep" />
+        </WizardStep>
+
+		<WizardStep
+			id="cardInfoStep"
+			title="{i18n>checkoutCreditCardCreditCardInfo}"
+			nextStep="invoiceStep"
+			activate=".onCheckStepActivation"
+			icon="sap-icon://credit-card"
+			>
+		<f:SimpleForm
+			editable="true"
+			layout="ResponsiveGridLayout">
+			<Label
+				labelFor="creditCardHolderName"
+				text="{i18n>checkoutCreditCardName}"
+				>
+				<layoutData>
+					<l:GridData span="XL4 L4 M4 S12"/>
+				</layoutData>
+			</Label>
+			<Input
+				id="creditCardHolderName"
+				placeholder="{i18n>creditCardHolderText}"
+				value="{
+					path: 'cart>/cardOwner',
+					type: 'sap.ui.model.type.String',
+					constraints: {
+						minLength: 2,
+					search: '^[a-zA-Z가-힣]+$'
+					}	
+				}"
+				valueStateText="이름은 최소 2자리 이상이어야 하며, 숫자나 특수문자를 포함할 수 없습니다."
+				change="checkCardHolderName"
+				required="true">
+				<layoutData>
+					<l:GridData span="XL8 L8 M8 S12"/>
+				</layoutData>
+			</Input>
+			<Label
+				text="{i18n>checkoutCreditCardCardNo}"
+				labelFor="creditCardNumber"
+				>
+				<layoutData>
+					<l:GridData span="XL4 L4 M4 S12"/>
+				</layoutData>
+			</Label>
+			<MaskInput
+				id="creditCardNumber"
+				placeholder="{i18n>creditCardNumberText}"
+				mask="CCCC-CCCC-CCCC-CCCC"
+				placeholderSymbol="_"
+				value="{
+					path: 'cart>/cardNumber',
+					type: 'sap.ui.model.type.String',
+					constraints: {
+						search: '^[0-9-]+$',
+						minLength: 19
+					}
+				}"
+				change="checkCardNumber"
+				required="true">
+				<rules>
+					<MaskInputRule
+						maskFormatSymbol="C"
+						regex="[0-9]"/>
+				</rules>
+				<layoutData>
+					<l:GridData span="XL8 L8 M8 S12"/>
+				</layoutData>
+			</MaskInput>
+			<Label
+				text="{i18n>checkoutCreditCardCode}"
+				labelFor="creditCardSecurityNumber"
+				>
+				<layoutData>
+					<l:GridData span="XL4 L4 M4 S12"/>
+				</layoutData>
+			</Label>
+			<MaskInput
+				id="creditCardSecurityNumber"
+				placeholder="{i18n>creditCardSecurityNumberText}"
+				mask="CCC"
+				placeholderSymbol="_"
+				value="{
+					path: 'cart>/cvc',
+					type: 'sap.ui.model.type.String',
+					constraints: {
+						minLength: 3,
+						search: '^[0-9]+$'
+					}
+				}"
+				change="checkSecurityCode"
+				required="true">
+				<rules>
+					<MaskInputRule
+						maskFormatSymbol="C"
+						regex="[0-9]"/>
+				</rules>
+				<layoutData>
+					<l:GridData span="XL8 L8 M8 S12"/>
+				</layoutData>
+			</MaskInput>
+			<Label text="{i18n>checkoutCreditCardExpiration}">
+				<layoutData>
+					<l:GridData span="XL4 L4 M4 S12"/>
+				</layoutData>
+			</Label>
+			<DatePicker
+				id="creditCardExpirationDate"
+				value="{
+					path: 'cart>/expiryDate',
+					type: 'sap.ui.model.type.String',
+					constraints: {
+						minLength: 7,
+						maxLength: 7
+					}
+				}"
+				valueFormat="MM/YYYY"
+				displayFormat="MM/YYYY"
+				required="true"
+				change="checkExpirationDate">
+				<layoutData>
+					<l:GridData span="XL8 L8 M8 S12"/>
+				</layoutData>
+			</DatePicker>
+		</f:SimpleForm>
+		<Button text="단계 4" press="onNextStep" enabled="{paymentCart>/isCardInfoValid}"/>
+	</WizardStep>
+
+            
+        <WizardStep title="배송지 입력" id="idDestination">
+            <VBox>
+                <Input id="idPostcode" placeholder="우편번호" liveChange=".onInputChange"/>
+                <Button text="우편번호 찾기" press=".onFindAddress" />
+				<Input id="idAddress" placeholder="주소" liveChange=".onInputChange"/>
+				<Input id="idDetailAddress" placeholder="상세주소" liveChange=".onInputChange"/>
+				<Input id="idExtraAddress" placeholder="참고항목" liveChange=".onInputChange"/>
+            </VBox>
+            <Button id="checkButton" text="주문확인" press=".onCheck" enabled="false" />
+        </WizardStep>
+    </Wizard>
+</content>
+</Page>
+</mvc:View>
