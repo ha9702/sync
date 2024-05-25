@@ -20,11 +20,11 @@
 
         <content>
     <Wizard id="paymentWizard" showNextButton="false" enableBranching="true">
+	<steps>
         <WizardStep title="{i18n>itemList}" 
 					id="itemsStep" 
-					icon="sap-icon://list" 
-					nextStep="paymentTypeStep" 
-					validated="false" >
+					icon="sap-icon://list"
+					nextStep="paymentTypeStep">
             <VBox>
                 <List id="itemsList" items="{cart>/cartItems}">
                     <CustomListItem>
@@ -68,18 +68,25 @@
         </WizardStep>
         <WizardStep id="paymentTypeStep" 
 					title="{i18n>paymentType}" 
-					validated="false"
-					subsequentSteps="cardInfoStep, idDestination">
+					complete="goToPaymentStep" 
+					icon="sap-icon://money-bills"
+					>
             <VBox>
                 <Text text="결제방식을 선택해주세요 : " />
-				<RadioButtonGroup id="paymentMethodSelection" select="discardAndApplyPath">
-					<buttons>
+				<SegmentedButton id="paymentMethodSelection" select="onPaymentTypeSelect" selectedKey="{/SelectedPayment}">
+					<items>
+						<SegmentedButtonItem id="payViaCC" key="Card" text="카드"/>
+						<SegmentedButtonItem id="payViaKakao" key="KakaoPay" text="카카오페이"/>
+					</items>
+				</SegmentedButton>
+				<!-- <RadioButtonGroup id="paymentMethodSelection" select="discardAndApplyPath">
+					<buttons> -->
 						<!-- <RadioButton text="카드" data-paymentType="Card" />
 						<RadioButton text="카카오페이" data-paymentType="KakaoPay" /> -->
-						<RadioButton text="itemsStep->paymentTypeStep->cardInfoStep->idDestination" />
+						<!-- <RadioButton text="itemsStep->paymentTypeStep->cardInfoStep->idDestination" />
 						<RadioButton text="itemsStep->paymentTypeStep->idDestination" />
 					</buttons>
-				</RadioButtonGroup>
+				</RadioButtonGroup> -->
                 <!-- <SegmentedButton select="discardAndApplyPath" id="paymentMethodSelection" >
                     <buttons>
                         <Button text="카드" press="onPaymentTypeSelect">
@@ -100,11 +107,11 @@
 
 		<WizardStep
 			id="cardInfoStep"
-			validated="false"
 			title="{i18n>checkoutCreditCardCreditCardInfo}"
 			activate=".onCheckStepActivation"
 			icon="sap-icon://credit-card"
-			nextStep="idDestination" >
+			nextStep="idDestination"
+			visible="{= ${/SelectedPayment} === 'Card'}" >
 		<f:SimpleForm
 			editable="true"
 			layout="ResponsiveGridLayout">
@@ -222,13 +229,13 @@
 				</layoutData>
 			</DatePicker>
 		</f:SimpleForm>
-		<Button text="단계 4" press="onNextStep" enabled="{paymentCart>/isCardInfoValid}"/>
+		<Button text="단계 4" press="onNextStep" enabled="{cart>/isCardInfoValid}"/>
 	</WizardStep>
 
             
         <WizardStep title="배송지 입력" 
 					id="idDestination"
-					validated="false">
+					>
             <VBox>
                 <Input id="idPostcode" placeholder="우편번호" liveChange=".onInputChange"/>
                 <Button text="우편번호 찾기" press=".onFindAddress" />
@@ -238,6 +245,7 @@
             </VBox>
             <Button id="checkButton" text="주문확인" press=".onCheck" enabled="false" />
         </WizardStep>
+	</steps>
     </Wizard>
 </content>
 </Page>

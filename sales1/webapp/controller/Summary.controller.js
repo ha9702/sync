@@ -81,7 +81,7 @@ sap.ui.define([
                         if (sPaymentType === "KakaoPay") {
                             this._callKakaoPayAPI(oSummaryData);
                         } else if (sPaymentType === "Card") {
-                            this._navigateToSuccess();
+                            this._createEntityAndNavigateToSuccess();
                         }
                     }
                 }.bind(this)
@@ -90,11 +90,11 @@ sap.ui.define([
 
         _prepareSummaryData: function (oCartModel) {
             var oCartItems = oCartModel.getProperty("/cartItems");
-
+            // var oCartModel = this.getView()
             var oSummaryData = {
                 Vbeln: "",
                 Kunnr: "CUS9999999",
-                Subcmon: "00",
+                Subcmon: oCartModel.Submonth,
                 toItem: oCartItems.map(function (item) {
                     return {
                         Matnr: item.selectedOption.key,
@@ -106,47 +106,8 @@ sap.ui.define([
             
             
             return oSummaryData;
-// <<<<<<< HEAD
+
         },
-
-            // _callKakaoPayAPI: function (oSummaryData) {
-            // var oCartModel = this.getView().getModel("cart");
-            // var oSummaryData = oCartModel.getProperty("/summaryData");
-
-            // _callKakaoPayAPI: function (oSummaryData) {
-            //     console.log("Calling KakaoPay API with data:", oSummaryData);
-    
-            //     $.ajax({
-            //         url: "http://localhost:3000/pay",
-            //         method: "POST",
-            //         contentType: "application/json",
-            //         data: JSON.stringify({
-            //             amount: oSummaryData.toItem.reduce(function (sum, item) {
-            //                 return sum + (parseFloat(item.Netpr) * parseFloat(item.Menge));
-            //             }, 0),
-            //             item_name: "SSP 영양제"
-            //         }),
-            //         success: function (response) {
-            //             console.log("KakaoPay API response:", response);
-            //             if (response.next_redirect_pc_url) {
-            //                 window.location.href = response.next_redirect_pc_url;
-            //             } else {
-            //                 sap.m.MessageBox.error("Failed to initiate KakaoPay payment.");
-            //             }
-            //         },
-            //         error: function (error) {
-            //             console.error("Error during KakaoPay API call:", error);
-            //             sap.m.MessageBox.error("Payment initiation failed: " + error.responseText);
-            //         }
-            //     });
-            // },
-
-            
-        // },
-
-        // _callKakaoPayAPI: function (oSummaryData) {
-            // var oCartModel = this.getView().getModel("cart");
-            // var oSummaryData = oCartModel.getProperty("/summaryData");
 
         _callKakaoPayAPI: function (oSummaryData) {
             console.log("Calling KakaoPay API with data:", oSummaryData);
@@ -172,13 +133,46 @@ sap.ui.define([
                 error: function (error) {
                     console.error("Error during KakaoPay API call:", error);
                     sap.m.MessageBox.error("Payment initiation failed: " + error.responseText);
-                }
+                },
+                complete: function (response) {
+                    if (response.status === 200) { // Assuming 200 means success
+                        this._createEntityAndNavigateToSuccess();
+                    }
+                }.bind(this)
             });
         },
 
-        _navigateToSuccess: function () {
-            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-            oRouter.navTo("RouteSuccess");
+        _createEntityAndNavigateToSuccess: function () {
+            var oSummaryData = JSON.parse(localStorage.getItem("summaryData")); // 로컬 스토리지에서 데이터 가져오기
+
+            if (oSummaryData) {
+                console.log("Creating entity with data:", oSummaryData);
+
+                var oModel = this.getOwnerComponent().getModel();
+                var oView  = this.getView();
+                oView.setModel(oModel);
+
+                oModel.create("/SalesHeaderSet", oSummaryData, {
+                    success: function (oData) {
+                        console.log("Sales order created successfully:", oData);
+                        
+                        var oCartModel = this.getOwnerComponent().getModel("cart");
+                        // Update the model with the new data
+                        oCartModel.setProperty("/Vbeln", oData.Vbeln);
+                        oCartModel.setProperty("/Amount", oData.Amount * 100);
+
+                        // Navigate to the Success view
+                        var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+                        oRouter.navTo("RouteSuccess");
+                    }.bind(this),
+                    error: function (oError) {
+                        console.error("Error creating sales order:", oError);
+                        sap.m.MessageBox.error("Order creation failed: " + oError.responseText);
+                    }
+                });
+            } else {
+                console.error("Invalid order information.");
+            }
         }
 
 

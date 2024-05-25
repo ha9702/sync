@@ -24,7 +24,9 @@ sap.ui.define([
                     cartItems: [],
                     selectedProduct: {},
                     editMode: false,
-                    totalPrice: 0
+                    totalPrice: 0,
+                    SelectedPayment: "Card",
+                    Submonth: 0
                 });
                 oCartModel.setDefaultBindingMode("TwoWay");
                 return oCartModel;

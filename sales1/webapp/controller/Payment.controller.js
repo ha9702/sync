@@ -11,12 +11,8 @@ sap.ui.define([
 
     return Controller.extend("sync.zec.sales1.controller.Payment", {
         onInit: function () {
-            console.log("onInit 호출됨"); // 디버깅 로그
-            this.branchingWizard = this.byId("paymentWizard");
-            this.radioBtnGroup = this.byId("paymentMethodSelection");
-            
             var oCartModel = this.getOwnerComponent().getModel("cart");
-            this.getView().setModel(oCartModel, "cart");
+            this.getView().setModel(oCartModel);
 
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
             var oRoute = oRouter.getRoute("RoutePayment");
@@ -40,7 +36,6 @@ sap.ui.define([
             // 결제 단계 모델 초기화
             oCartModel.setProperty("/selectedPaymentType", "Card");
             oCartModel.setProperty("/paymentTypeSelected", false);
-            oCartModel.setProperty("/showCardInfo", false);
             oCartModel.setProperty("/isCardInfoValid", false); // Initialize validation state
 
             // Daum Postcode API 스크립트 로드
@@ -58,136 +53,42 @@ sap.ui.define([
         },
 
         _onPatternMatched: function (oEvent) {
-            console.log("_onPatternMatched 호출됨");
             var sCartItems = oEvent.getParameter("arguments").cartItems;
             var aCartItems = JSON.parse(decodeURIComponent(sCartItems));
             var oCartModel = this.getView().getModel("cart");
             oCartModel.setProperty("/cartItems", aCartItems);
 
-            // var sStepId = oEvent.getParameter("arguments").stepId;
-            // if (sStepId) {
-            //     this._goToStep(sStepId);
-            // }
             var sStepId = oEvent.getParameter("arguments").stepId;
-            if (sStepId && !this._isPathManuallySet) {
-                console.log("URL에 의해 이동할 단계: ", sStepId); // 디버깅 로그
+            if (sStepId) {
                 this._goToStep(sStepId);
             }
         },
 
         _goToStep: function (sStepId) {
-            console.log("_goToStep 호출됨: ", sStepId); // 디버깅 로그
             var oWizard = this.byId("paymentWizard");
             var oStep = this.byId(sStepId);
             if (oStep) {
-                console.log("마법사의 단계를 이동: ", sStepId); // 디버깅 로그
                 oWizard.discardProgress(oStep);
                 oWizard.goToStep(oStep);
             }
         },
 
-        onAfterRendering: function () {
-            console.log("onAfterRendering 호출됨"); // 디버깅 로그
-			this.applyPath(0);
-		},
-
-		discardAndApplyPath: function (event) {
-            var index = event.getParameter("selectedIndex");
-            console.log("discardAndApplyPath 호출됨, 선택된 인덱스: ", index); // 디버깅 로그
-            this._isPathManuallySet = true; // Manual path set flag
-
-            // 모든 단계 초기화
-            this._discardAllProgress();
-
-            // this.branchingWizard.discardProgress(this.branchingWizard.getSteps()[1]); // 현재 단계 유지
-            var oButton = this.radioBtnGroup.getButtons()[index];
-            var sSelectedKey = oButton.getText(); // getText로 값 가져오기
-            console.log("선택된 결제 방식: ", sSelectedKey); // 디버깅 로그
-            var oCartModel = this.getView().getModel("cart");
-
-            oCartModel.setProperty("/selectedPaymentType", sSelectedKey);
-            oCartModel.setProperty("/showCardInfo", sSelectedKey.includes("cardInfoStep"));
-            this.applyPath(index);
-        },
-
-        _discardAllProgress: function () {
-            var oWizard = this.byId("paymentWizard");
-            var aSteps = oWizard.getSteps();
-            aSteps.forEach(function(oStep) {
-                oWizard.discardProgress(oStep);
-            });
-        },
-
-        applyPath: function (index) {
-            console.log("applyPath 호출됨, 적용할 경로 인덱스: ", index); // 디버깅 로그
-            this._lastPathApplied = index;
-
-            // 기존 단계 초기화
-            var oWizard = this.byId("paymentWizard");
-            var aSteps = oWizard.getSteps();
-            aSteps.forEach(function(oStep) {
-                oStep.setNextStep(null);
-            });
-
-            var pathIds = this.radioBtnGroup.getButtons()[index].getText().split("->");
-            console.log("적용할 경로: ", pathIds); // 디버깅 로그
-            for (var i = 0; i < pathIds.length - 1; i++) {
-                var step = this.byId(pathIds[i]);
-                var nextStep = this.byId(pathIds[i + 1]);
-                if (step && nextStep) {
-                    step.setNextStep(nextStep);
-                    console.log("단계 설정: ", pathIds[i], " 다음 단계: ", pathIds[i + 1]); // 디버깅 로그
-                } else {
-                    console.error("단계 설정 오류: ", pathIds[i], pathIds[i + 1]); // 오류 로그
-                }
-            }
-            this.byId(pathIds[pathIds.length - 1]).setNextStep(null);
-            console.log("최종 단계 설정 완료: ", pathIds[pathIds.length - 1]); // 디버깅 로그
-        },
-
-        reapplyLastPath: function () {
-            console.log("reapplyLastPath 호출됨"); // 디버깅 로그
-            this.applyPath(this._lastPathApplied);
-        },
-
-        // _findParentView: function () {
-        //     var parent = this.getView().getParent();
-        //     while (parent.getMetadata().getName() !== "sap.ui.core.mvc.XMLView") {
-        //         parent = parent.getParent();
-        //     }
-
-        //     return parent;
-        // },
-
         onPaymentTypeSelect: function (oEvent) {
-            var index = oEvent.getParameter("selectedIndex");
-            console.log("onPaymentTypeSelect 호출됨, 선택된 인덱스: ", index); // 디버깅 로그
-            var oButton = this.radioBtnGroup.getButtons()[index];
-            var sSelectedKey = oButton.getText(); // getText로 값 가져오기
-            console.log("선택된 결제 방식: ", sSelectedKey); // 디버깅 로그
-            var oCartModel = this.getView().getModel("cart");
-
-            oCartModel.setProperty("/selectedPaymentType", sSelectedKey);
-            oCartModel.setProperty("/showCardInfo", sSelectedKey.includes("cardInfoStep"));
-            this.applyPath(index); // applyPath 호출 추가
+            this.setPaymentMethod(oEvent);    
         },
 
-        onNextStep: function () {
+        onNextStep: function (oEvent) {
             var oWizard = this.byId("paymentWizard");
             oWizard.nextStep();
-        },
-        // onNextStep: function () {
-        //     var oWizard = this.byId("paymentWizard");
-        //     var oCartModel = this.getView().getModel("cart");
-        //     var sSelectedPaymentType = oCartModel.getProperty("/selectedPaymentType");
 
-        //     if (sSelectedPaymentType === "KakaoPay" && oWizard.getCurrentStep() === this.byId("paymentTypeStep").getId()) {
-        //         var oDestinationStep = this.byId("idDestination");
-        //         oWizard.goToStep(oDestinationStep);
-        //     } else {
-        //         oWizard.nextStep();
-        //     }
-        // },
+            var oButton = oEvent.getSource();
+            var sButtonId = oButton.getId();
+
+            if (oButton) {
+                oButton.setVisible(false);
+            }
+
+        },
 
         onNavBack: function () {
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
@@ -341,7 +242,7 @@ sap.ui.define([
 
             var oSummaryData = {
                 cartItems: oCartModel.getProperty("/cartItems"),
-                selectedPaymentType: oCartModel.getProperty("/selectedPaymentType"),
+                selectedPaymentType: oCartModel.getProperty("/SelectedPayment"),
                 cardOwner: oCartModel.getProperty("/cardOwner"),
                 cardNumber: oCartModel.getProperty("/cardNumber"),
                 cvc: oCartModel.getProperty("/cvc"),
@@ -386,6 +287,58 @@ sap.ui.define([
                 return oInput && oInput.getValue().trim() !== "";
             }, this);
         },
+
+        goToPaymentStep: function () {
+            var selectedKey = this.getView().getModel().getProperty("/SelectedPayment");
+            var oWizard = this.byId("paymentWizard");
+            var oStep = this.byId("paymentTypeStep");
+
+            // 선택된 결제 방법에 따라 다음 스텝 설정
+            switch (selectedKey) {
+                case "KakaoPay":
+                    oStep.setNextStep(this.byId("idDestination"));
+                    break;
+                case "Card":
+                default:
+                    oStep.setNextStep(this.byId("cardInfoStep"));
+                    break;
+            }
+            
+        },
+        
+        setPaymentMethod: function (oEvent) {
+            var selectedKey = oEvent.getParameter("key");
+            var oCartModel = this.getView().getModel("cart");
+            oCartModel.setProperty("/SelectedPayment", selectedKey);
+
+            // 각 스텝의 visible 속성을 업데이트
+            this._updateStepVisibility(selectedKey);
+            this.goToPaymentStep();
+        },
+
+        _updateStepVisibility: function (selectedKey) {
+            var oView = this.getView();
+
+            // 모든 스텝들을 보이지 않도록 설정
+            oView.byId("cardInfoStep").setVisible(false);
+            oView.byId("idDestination").setVisible(false);
+            // 선택된 결제 방법에 따른 스텝을 보이도록 설정
+            switch (selectedKey) {
+                case "KakaoPay":
+                    oView.byId("idDestination").setVisible(true);
+                    oView.byId("paymentTypeStep").setIcon("sap-icon://money-bills");
+                    oView.byId("idDestination").setIcon("sap-icon://shipping-status");
+                    break;
+                case "Card":
+                default:
+                    oView.byId("cardInfoStep").setVisible(true);
+                    oView.byId("idDestination").setVisible(true);
+                    oView.byId("paymentTypeStep").setIcon("sap-icon://money-bills");
+                    oView.byId("cardInfoStep").setIcon("sap-icon://credit-card");
+                    oView.byId("idDestination").setIcon("sap-icon://shipping-status");
+                    break;
+            }
+        }
 
     });
 });
