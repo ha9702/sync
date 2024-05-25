@@ -19,15 +19,6 @@
                                 <Image src="../images/{Maktx}.jpg" width="80px" height="100px" class="sapUiTinyMarginEnd"/>
                                 <VBox class="sapUiNoMargin" width="100%">
                                     <Title text="{Maktx}" level="H5" class="sapUiNoMargin"/>
-                                    <ObjectNumber number="{
-                                        parts:[
-                                            {path : 'Netpr'},
-                                            {path : 'Waers'}
-                                        ],
-                                        type:'sap.ui.model.type.Currency',
-                                        formatOptions:{showMeasure: false}
-                                    }"
-                                    numberUnit="{Waers}" class="sapUiNoMargin"/>
                                     <Text text="판매중"  class="sapUiNoMargin salesText"/>
                                 </VBox>
                             </HBox>
@@ -59,34 +50,40 @@
                 </customHeader>
                 <content>
                   <VBox id="productDetails" class="sapUiSmallMargin" binding="{cart>/selectedProduct}" >
-                    <HBox alignItems="Inherit">
-                        <Title text="{cart>/selectedProduct/Maktx}" level="H2" class="productName" />
+                    <HBox alignItems="Center" alignContent="SpaceBetween">
+                        <Title text="{cart>/selectedProduct/selectedOption/text}" level="H2" class="productName" />
                         
-                          <ObjectNumber number="{
-                            parts:[
-                                {path : 'cart>/selectedProduct/Netpr'},
-                                {path : 'cart>/selectedProduct/Waers'}
+                        <ObjectNumber number="{
+                        parts:[
+                            {path : 'cart>selectedOption/Netpr'},
+                            {path : 'cart>selectedOption/Waers'}
                             ],
                             type:'sap.ui.model.type.Currency',
                             formatOptions:{showMeasure: false}
                         }"
-                        numberUnit="{cart>/selectedProduct/Waers}" class="productPriceMargin" />
+                        numberUnit="{cart>selectedOption/Waers}" class="sapUiNoMargin"/>
+                          
                     </HBox>
-                        <Text text="{cart>/cartItems/selectedProduct/AdditionalText}"/>
+                        <Text text="{cart>/selectedProduct/AdditionalText}" />
                         <Image src="../images/{cart>/selectedProduct/Maktx}.jpg" width="400px"/>
-                            <Select showSecondaryValues="true"  
-                            items="{path: 'toSelect'}"
+
+                        <Select showSecondaryValues="true"  
+                            items="{path: 'cart>/selectedProduct/toSelect'}"
                             width="300px"
                             id="idToSelect"
+                            visible="{cart>/productSelected}"
                             selectedKey="{cart>/selectedProduct/selectedOption/key}"
                             change=".onSelectChange">
+
                         <c:ListItem key="{Matnr}" 
                                     text="{Maktx}"
                                     additionalText="{
                                         parts: [{ path: 'Netpr' },
                                                 { path: 'Waers' }],
-                                        type:'sap.ui.model.type.Currency'
-                                    }"/>
+                                        type:'sap.ui.model.type.Currency',
+                                        formatOptions:{showMeasure: true}
+                                    }"
+                        />
                     </Select>
                     </VBox>
                 </content>
@@ -127,22 +124,20 @@
                                     <HBox justifyContent="SpaceBetween" width="100%">
                                         <Image src="{cart>Image}" width="50px" height="50px"/>
                                         <VBox>
-                                            <Text text="{cart>Maktx}" class="sapUiTinyMarginBottom"/>
                                             <Text text="{cart>selectedOption/text}" class="sapUiTinyMarginBottom"/>
-                                            <Text text="{cart>selectedOption/additionalText}" class="sapUiTinyMarginBottom"/>
                                         </VBox>
                                     </HBox>
                                 </VBox>
                                 <VBox class="sapUiTinyMarginEnd">
                                     <ObjectNumber number="{
                                         parts:[
-                                            {path : 'cart>Netpr'},
-                                            {path : 'cart>Waers'}
+                                            {path : 'cart>selectedOption/Netpr'},
+                                            {path : 'cart>selectedOption/Waers'}
                                             ],
                                             type:'sap.ui.model.type.Currency',
                                             formatOptions:{showMeasure: false}
                                         }"
-                                        numberUnit="{cart>Waers}" class="sapUiNoMargin"/>
+                                        numberUnit="{cart>selectedOption/Waers}" class="sapUiNoMargin"/>
                                     </VBox>
                                     <Button icon="sap-icon://delete" 
                                             press="onDeleteItem" 
@@ -156,16 +151,13 @@
                 <footer>
                   <Toolbar >
                     <Text text="총 금액 : "/>
-                    <ObjectNumber number="{cart>/totalPrice}" numberUnit="KRW" class="sapUiNoMargin"/>
-                    <!-- <ObjectNumber number="{
-                      parts:[ 
-                          {path : 'cart>/totalPrice'},
-                          {path : 'cart>/cartItems/0/Waers'}
-                      ],
-                      type:'sap.ui.model.type.Currency',
-                      formatOptions:{showMeasure: false}
-                  }"
-                  numberUnit="{cart>/cartItems/0/Waers}" class="sapUiNoMargin"/>   -->
+                    <ObjectNumber number="{parts:[
+                                            {path: 'cart>/totalPrice'},
+                                            {path: 'cart>/cartItems/0/Waers'} ],
+                                            type:'sap.ui.model.type.Currency',
+                                            formatOptions:{showMeasure: false} }" 
+                                            numberUnit="{cart>/cartItems/0/Waers}" class="sapUiNoMargin"/>
+                    
                       <ToolbarSpacer />
                       <Button text="결제하기" type="Accept" press="onPayment" visible="{= !${cart>/editMode} }"/>
                         <Button

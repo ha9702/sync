@@ -23,6 +23,7 @@ sap.ui.define([
             // Listen to screen size changes
             Device.media.attachHandler(this._onResize.bind(this), null, Device.media.RANGESETS.SAP_STANDARD);
 
+            oCartModel.setProperty("/productSelected", false);
             
         },
 
@@ -43,7 +44,7 @@ sap.ui.define([
 
             // Check if selectedProduct is defined and not empty
             if (!oSelectedProduct || !oSelectedProduct.Maktx || !oSelectedProduct.selectedOption || !oSelectedProduct.selectedOption.key) {
-                sap.m.MessageToast.show("장바구니에 추가된 상품이 없습니다.");
+                sap.m.MessageToast.show("선택된 상품이 없습니다.");
                 return;
             }
 
@@ -57,6 +58,8 @@ sap.ui.define([
             } else {
                 oSelectedProduct.Quantity = "1.00"; // 초기 수량을 소수점 두 자리로 설정
                 oSelectedProduct.Image = "../images/" + oSelectedProduct.Maktx + ".jpg"; // 이미지 경로 추가
+                oSelectedProduct.Netpr = oSelectedProduct.selectedOption.Netpr;
+                oSelectedProduct.Waers = oSelectedProduct.selectedOption.Waers;
                 aCartItems.push(JSON.parse(JSON.stringify(oSelectedProduct))); // Deep copy to avoid reference issues
             }
 
@@ -64,6 +67,11 @@ sap.ui.define([
             oCartModel.setProperty("/cartItems", aCartItems);
             // Update total price
             this._updateTotalPrice();
+            var oFlexibleColumnLayout = this.byId("flexibleColumnLayout");
+            oFlexibleColumnLayout.setLayout(LayoutType.ThreeColumnsMidExpanded);
+
+            var oCartToggleButton = this.byId("cartToggleButton");
+            oCartToggleButton.setPressed(true);
         },
 
         _updateTotalPrice: function () {
@@ -72,11 +80,11 @@ sap.ui.define([
             var fTotalPrice = 0;
 
             aCartItems.forEach(function (oItem) {
-                var fItemPrice = parseFloat(oItem.selectedOption.additionalText.replace(/[^0-9.-]+/g, "")); // Extract numeric price
+                var fItemPrice = parseFloat(oItem.Netpr);
                 fTotalPrice += fItemPrice * parseFloat(oItem.Quantity);
             });
 
-            oCartModel.setProperty("/totalPrice", fTotalPrice); // 총 금액을 소수점 두 자리로 설정
+            oCartModel.setProperty("/totalPrice", fTotalPrice);
         },
 
         onSelectProduct: function (oEvent) {
@@ -85,13 +93,47 @@ sap.ui.define([
             var oCartModel = oView.getModel("cart");
             
             oCartModel.setProperty("/selectedProduct", oProduct);
+            oCartModel.setProperty("/productSelected", true);
 
             var oSelect = this.byId("idToSelect");
-            oSelect.bindElement({
-                path: "/ListItemSet('" + oProduct.Matnr + "')"
-            });
+            // oSelect.bindElement({
+            //     path: "/ListItemSet('" + oProduct.Matnr + "')"
+            // });
 
-            console.log(oSelect);
+            // 바인딩 경로 설정 및 첫 번째 항목 선택
+            var sPath = "/ListItemSet('" + oProduct.Matnr + "')/toSelect";
+            oSelect.bindAggregation("items", {
+                path: sPath,
+                template: new sap.ui.core.ListItem({
+                    key: "{Matnr}",
+                    text: "{Maktx}",
+                    additionalText: {
+                        parts: [{ path: 'Netpr' }, { path: 'Waers' }],
+                        formatter: this.formatCurrency
+                    }
+                }),
+                events: {
+                    dataReceived: function() {
+                        var aItems = oSelect.getItems();
+                        if (aItems.length > 0) {
+                            var oFirstItem = aItems[0];
+                            var sKey = oFirstItem.getKey();
+                            var sText = oFirstItem.getText();
+                            var sAdditionalText = oFirstItem.getAdditionalText();
+                            var [Netpr, Waers] = sAdditionalText.split(" ");
+
+                            oCartModel.setProperty("/selectedProduct/selectedOption", {
+                                key: sKey,
+                                text: sText,
+                                additionalText: sAdditionalText,
+                                Netpr: Netpr,
+                                Waers: Waers
+                            });
+                            oSelect.setSelectedKey(sKey);
+                        }
+                    }
+                }
+            });
             
             // Set additional text based on the value of oProduct.Maktx
             switch (oProduct.Maktx) {
@@ -184,7 +226,8 @@ sap.ui.define([
             var sSelectedKey = oSelectedItem.getKey();
             var sSelectedText = oSelectedItem.getText();
             var sAdditionalText = oSelectedItem.getAdditionalText();
-            
+            var [Netpr, Waers] = sAdditionalText.split(" "); // Assuming the formatter returns Netpr and Waers separated by space
+
             var oCartModel = this.getView().getModel("cart");
             var oSelectedProduct = oCartModel.getProperty("/selectedProduct");
             
@@ -192,7 +235,9 @@ sap.ui.define([
             oSelectedProduct.selectedOption = {
                 key: sSelectedKey,
                 text: sSelectedText,
-                additionalText: sAdditionalText
+                additionalText: sAdditionalText,
+                Netpr: Netpr,
+                Waers: Waers
             };
         
             // Bind product details to the selected product in the cart model

@@ -19,8 +19,12 @@
         </headerContent>
 
         <content>
-    <Wizard id="paymentWizard" showNextButton="false" >
-        <WizardStep title="{i18n>itemList}" id="itemsStep" icon="sap-icon://list">
+    <Wizard id="paymentWizard" showNextButton="false" enableBranching="true">
+        <WizardStep title="{i18n>itemList}" 
+					id="itemsStep" 
+					icon="sap-icon://list" 
+					nextStep="paymentTypeStep" 
+					validated="false" >
             <VBox>
                 <List id="itemsList" items="{cart>/cartItems}">
                     <CustomListItem>
@@ -62,34 +66,45 @@
                 <Button text="단계 2" press="onNextStep" />
             </VBox>
         </WizardStep>
-        <WizardStep id="paymentTypeStep" title="{i18n>paymentType}" >
+        <WizardStep id="paymentTypeStep" 
+					title="{i18n>paymentType}" 
+					validated="false"
+					subsequentSteps="cardInfoStep, idDestination">
             <VBox>
                 <Text text="결제방식을 선택해주세요 : " />
-                <SegmentedButton select="onPaymentTypeSelect" >
+				<RadioButtonGroup id="paymentMethodSelection" select="discardAndApplyPath">
+					<buttons>
+						<!-- <RadioButton text="카드" data-paymentType="Card" />
+						<RadioButton text="카카오페이" data-paymentType="KakaoPay" /> -->
+						<RadioButton text="itemsStep->paymentTypeStep->cardInfoStep->idDestination" />
+						<RadioButton text="itemsStep->paymentTypeStep->idDestination" />
+					</buttons>
+				</RadioButtonGroup>
+                <!-- <SegmentedButton select="discardAndApplyPath" id="paymentMethodSelection" >
                     <buttons>
-                        <Button text="카드">
+                        <Button text="카드" press="onPaymentTypeSelect">
                             <customData>
                                 <core:CustomData key="paymentType" value="Card"/>
                             </customData>
                         </Button>
-                        <Button text="카카오페이">
+                        <Button text="카카오페이" press="onPaymentTypeSelect">
                             <customData>
                                 <core:CustomData key="paymentType" value="KakaoPay"/>
                             </customData>
                         </Button>
                     </buttons>
-                </SegmentedButton>
+                </SegmentedButton> -->
             </VBox>
             <Button text="단계 3" press="onNextStep" />
         </WizardStep>
 
 		<WizardStep
 			id="cardInfoStep"
+			validated="false"
 			title="{i18n>checkoutCreditCardCreditCardInfo}"
-			nextStep="invoiceStep"
 			activate=".onCheckStepActivation"
 			icon="sap-icon://credit-card"
-			>
+			nextStep="idDestination" >
 		<f:SimpleForm
 			editable="true"
 			layout="ResponsiveGridLayout">
@@ -211,7 +226,9 @@
 	</WizardStep>
 
             
-        <WizardStep title="배송지 입력" id="idDestination">
+        <WizardStep title="배송지 입력" 
+					id="idDestination"
+					validated="false">
             <VBox>
                 <Input id="idPostcode" placeholder="우편번호" liveChange=".onInputChange"/>
                 <Button text="우편번호 찾기" press=".onFindAddress" />
