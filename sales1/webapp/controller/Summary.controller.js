@@ -17,6 +17,7 @@ sap.ui.define([
             }.bind(this));
 
             this.getView().setModel(oCartModel, "cart");
+
         },
 
         _onDataLoaded: function() {
@@ -125,21 +126,33 @@ sap.ui.define([
                 success: function (response) {
                     console.log("KakaoPay API response:", response);
                     if (response.next_redirect_pc_url) {
-                        window.location.href = response.next_redirect_pc_url;
+                        this._openPopup(response.next_redirect_pc_url);
                     } else {
                         sap.m.MessageBox.error("Failed to initiate KakaoPay payment.");
                     }
-                },
+                }.bind(this),
                 error: function (error) {
                     console.error("Error during KakaoPay API call:", error);
                     sap.m.MessageBox.error("Payment initiation failed: " + error.responseText);
-                },
-                complete: function (response) {
-                    if (response.status === 200) { // Assuming 200 means success
-                        this._createEntityAndNavigateToSuccess();
-                    }
-                }.bind(this)
+                }
             });
+        },
+
+        _openPopup: function (url) {
+            var popup = window.open(url, "KakaoPayPopup", "width=500,height=600");
+
+            var popupTick = setInterval(function() {
+                if (popup.closed) {
+                    clearInterval(popupTick);
+                    this._handlePopupClose();
+                }
+            }.bind(this), 500);
+        },
+
+        _handlePopupClose: function () {
+            console.log("Popup closed");
+            // 팝업이 닫힌 후에 결제가 완료되었는지 확인하고, 필요한 경우 성공 페이지로 이동합니다.
+            this._createEntityAndNavigateToSuccess();
         },
 
         _createEntityAndNavigateToSuccess: function () {
@@ -155,7 +168,7 @@ sap.ui.define([
                 oModel.create("/SalesHeaderSet", oSummaryData, {
                     success: function (oData) {
                         console.log("Sales order created successfully:", oData);
-                        
+                        debugger;
                         var oCartModel = this.getOwnerComponent().getModel("cart");
                         // Update the model with the new data
                         oCartModel.setProperty("/Vbeln", oData.Vbeln);

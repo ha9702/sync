@@ -56,7 +56,7 @@ app.post('/pay', async (req, res) => {
 // 승인 핸들러 수정
 app.get('/approval', (req, res) => {
     console.log('Payment approved');
-    res.redirect('http://localhost:8080/test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#synczecsales1-display&/success'); // 변경된 포트 번호 사용
+    res.send('<script>window.close();</script>'); // 팝업 창 닫기
 });
 
 app.get('/cancel', (req, res) => {
