@@ -1,0 +1,18 @@
+<mvc:View  controllerName="sync.zec.sales1.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m">
+    
+            <Page id="idMasterPage" title="구매유형" class="noScroll">
+                <content>
+                    <HBox id="idProductSection" width="100%" justifyContent="Center" alignItems="Center">
+                        <Image src="../images/일반판매.png" width="100%" press="onRegularProductPress"/>
+                        
+                        <Image src="../images/구독주문.png" width="100%" press="onSubscriptionProductPress"/>
+                        
+                    </HBox>
+                    
+
+                </content>
+            </Page>
+        
+</mvc:View>    

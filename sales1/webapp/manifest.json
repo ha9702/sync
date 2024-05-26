@@ -103,11 +103,22 @@
       },
       "routes": [
         {
-          "name": "RouteHome",
+          "name": "RouteMain",
           "pattern": ":?query:",
           "target": [
-            "TargetHome"
+            "TargetMain"
           ]
+        },
+        {
+          "name": "RouteHome",
+          "pattern": "home",
+          "target": "TargetHome"
+        },
+
+        {
+          "name": "RouteSub",
+          "pattern": "sub",
+          "target": "TargetSub"
         },
 
         {
@@ -130,30 +141,43 @@
 
       ],
       "targets": {
-        "TargetHome": {
+        "TargetMain": {
           "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
           "viewLevel": 1,
+          "viewId": "Main",
+          "viewName": "Main"
+        },
+
+        "TargetHome": {
+          "viewLevel": 2,
           "viewId": "Home",
           "viewName": "Home"
+        },
+
+        "TargetSub": {
+          "viewName": "Sub",
+          "viewId": "Sub",
+          "viewLevel": 2
         },
 
         "TargetPayment": {
           "viewName": "Payment",
           "viewId": "Payment",
-          "viewLevel": 2
+          "viewLevel": 3
         },
         
         "TargetSummary": {
           "viewId": "Summary",
           "viewName": "Summary",
-          "viewLevel": 2
+          "viewLevel": 4
         },
 
         "TargetSuccess": {
           "viewId": "Success",
-          "viewName": "Success"
+          "viewName": "Success",
+          "viewLevel": 5
         }
       }
     },

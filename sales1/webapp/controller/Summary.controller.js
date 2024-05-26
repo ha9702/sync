@@ -91,15 +91,21 @@ sap.ui.define([
 
         _prepareSummaryData: function (oCartModel) {
             var oCartItems = oCartModel.getProperty("/cartItems");
+                console.log(oCartModel);
+                debugger;
             // var oCartModel = this.getView()
+            var matnrValue = (oCartModel.oData.Submonth !== 0) ? oCartModel.getProperty("/Matnr") : (oCartItems.selectedOption && oCartItems.selectedOption.key) ? oCartItems.selectedOption.key : oCartItems.Matnr;
+            console.log(matnrValue);
+            debugger;
             var oSummaryData = {
                 Vbeln: "",
                 Kunnr: "CUS9999999",
-                Subcmon: oCartModel.Submonth,
+                Subcmon: oCartModel.oData.Submonth.toString(),
                 toItem: oCartItems.map(function (item) {
                     return {
-                        Matnr: item.selectedOption.key,
-                        Netpr: item.Netpr,
+                        
+                        Matnr: matnrValue,
+                        Netpr: parseFloat(item.Netpr).toFixed(2),
                         Menge: parseFloat(item.Quantity).toFixed(2) // 타입 변환
                     };
                 })
