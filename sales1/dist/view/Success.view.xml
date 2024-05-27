@@ -1,0 +1,17 @@
+<mvc:View
+    controllerName="sync.zec.sales1.controller.Success"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page
+        id="successPage"
+        title="주문 완료!">
+        <content>
+            <Title title="주문 완료" level="H1" />
+            <VBox class="sapUiSmallMargin">
+                <Text id="idVbeln" text="주문번호 : {/Vbeln} 의 주문이 성공적으로 완료되었습니다." />
+                <Text id="idAmount" text="총 금액 : {/Amount}원 이 결제되었습니다. " />
+                <Button text="홈으로 돌아가기" press="onNavHome" />
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

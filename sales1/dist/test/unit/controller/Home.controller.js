@@ -1,0 +1,2 @@
+sap.ui.define(["synczec/sales1/controller/Home.controller"],function(e){"use strict";QUnit.module("Home Controller");QUnit.test("I should test the Home controller",function(o){var t=new e;t.onInit();o.ok(t)})});
+//# sourceMappingURL=Home.controller.js.map

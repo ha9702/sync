@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/UIComponent","sap/ui/Device","sync/zec/sales1/model/models","sap/ui/model/odata/v2/ODataModel"],function(e,t,i,s){"use strict";return e.extend("sync.zec.sales1.Component",{metadata:{manifest:"json"},init:function(){e.prototype.init.apply(this,arguments);this.getRouter().initialize();this.setModel(i.createDeviceModel(),"device");this.setModel(i.createCartModel(),"cart")}})});
+//# sourceMappingURL=Component.js.map

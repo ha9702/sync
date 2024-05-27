@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/mvc/Controller","sap/ui/core/UIComponent"],function(o,e){"use strict";return o.extend("sync.zec.sales1.controller.Main",{onInit:function(){},onRegularProductPress:function(){sap.m.MessageToast.show("일반 상품 섹션이 클릭되었습니다.");var o=e.getRouterFor(this);o.navTo("RouteHome")},onSubscriptionProductPress:function(){sap.m.MessageToast.show("구독 상품 섹션이 클릭되었습니다.");var o=e.getRouterFor(this);o.navTo("RouteSub")}})});
+//# sourceMappingURL=Main.controller.js.map
