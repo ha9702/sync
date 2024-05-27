@@ -5,9 +5,9 @@
             <Page id="idMasterPage" title="구매유형" class="noScroll">
                 <content>
                     <HBox id="idProductSection" width="100%" justifyContent="Center" alignItems="Center">
-                        <Image src="/images/Regular.png" width="100%" press="onRegularProductPress"/>
+                        <Image src="http://210.16.199.140:8001/sap/bc/ui5_ui5/sap/zec_ui5/images/Regular.png?sap-client=100" width="100%" press="onRegularProductPress"/>
                         
-                        <Image src="/images/Sub.png" width="100%" press="onSubscriptionProductPress"/>
+                        <Image src="http://210.16.199.140:8001/sap/bc/ui5_ui5/sap/zec_ui5/images/Sub.png?sap-client=100" width="100%" press="onSubscriptionProductPress"/>
                         
                     </HBox>
                     
