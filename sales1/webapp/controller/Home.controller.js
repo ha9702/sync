@@ -258,7 +258,14 @@ sap.ui.define([
             console.log(oSelectedProduct);
 
             this._updateTotalPrice();
+        },
+
+        onAvatarPress: function() {
+            var oCartModel = this.getView().getModel("cart");
+            var sKunnr = oCartModel.getProperty("/Kunnr");
+            if (sKunnr) {
+                MessageBox.information("현재 로그인한 고객코드: " + sKunnr);
+            }
         }
-        
     });
 });

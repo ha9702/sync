@@ -6,9 +6,10 @@ sap.ui.define([
         "sap/ui/core/UIComponent",
         "sap/ui/Device",
         "sync/zec/sales1/model/models",
-        "sap/ui/model/odata/v2/ODataModel"
+        "sap/ui/model/odata/v2/ODataModel",
+        "sap/ui/model/json/JSONModel"
     ],
-    function (UIComponent, Device, models, ODataModel) {
+    function (UIComponent, Device, models, ODataModel, JSONModel) {
         "use strict";
 
         return UIComponent.extend("sync.zec.sales1.Component", {
@@ -24,6 +25,14 @@ sap.ui.define([
             init: function () {
                 // call the base component's init function
                 UIComponent.prototype.init.apply(this, arguments);
+
+                var oRootPath = jQuery.sap.getModulePath("sync.zec.sales1"); // resource root
+
+                var oImageModel = new JSONModel({
+                    path: oRootPath
+                });
+
+                this.setModel(oImageModel, "imageModel");
 
                 // enable routing
                 this.getRouter().initialize();

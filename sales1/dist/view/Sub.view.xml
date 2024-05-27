@@ -16,7 +16,7 @@
                         
                         <CustomListItem type="Active" press="onSelectProduct">
                             <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiNoMargin">
-                                <Image src="/images/{Matnr}.jpg" width="80px" height="100px" class="sapUiTinyMarginEnd"/>
+                                <Image src="{imageModel>/path}/images/{Matnr}.jpg" width="80px" height="100px" class="sapUiTinyMarginEnd"/>
                                 <VBox class="sapUiNoMargin" width="100%">
                                     <Title text="{Maktx}" level="H5" class="sapUiNoMargin"/>
                                     <ObjectNumber number="{
@@ -73,7 +73,7 @@
                           
                     </HBox>
                         <Text text="{cart>/selectedProduct/AdditionalText}" />
-                        <Image src="/images/{cart>/selectedProduct/Matnr}.jpg" width="400px"/>
+                        <Image src="{imageModel>/path}/images/{cart>/selectedProduct/Matnr}.jpg" width="400px"/>
 
                     </VBox>
                 </content>
@@ -122,7 +122,7 @@
                                   <VBox class="sapUiNoMargin">
                                     <Text text="{= 'x ' + ${path:'cart>Quantity', type: 'sap.ui.model.odata.type.Decimal'}}" class="sapUiTinyMarginBottom" />
                                     <HBox justifyContent="SpaceBetween" width="100%">
-                                        <Image src="{cart>Image}" width="50px" height="50px"/>
+                                        <Image src="{imageModel>/path}{cart>Image}" width="50px" height="50px"/>
                                         <VBox>
                                             <Text text="{cart>Maktx}" class="sapUiTinyMarginBottom"/>
                                         </VBox>

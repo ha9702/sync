@@ -10,10 +10,50 @@ sap.ui.define([
 
         return Controller.extend("sync.zec.sales1.controller.Main", {
             onInit: function () {
-                // Add press event listeners to VBoxes
-                // this.byId("regularProductSection").attachBrowserEvent("click", this.onRegularProductPress.bind(this));
-                // this.byId("subscriptionProductSection").attachBrowserEvent("click", this.onSubscriptionProductPress.bind(this));
+                var oCartModel = this.getOwnerComponent().getModel("cart");
+                this.getView().setModel(oCartModel, "cart");
+
+                var oRouter = UIComponent.getRouterFor(this);
+                oRouter.getRoute("synczecsales1").attachPatternMatched(this._onObjectMatched, this);
+                
+                this._extractKunnrFromURL();
+
             },
+
+            _extractKunnrFromURL: function() {
+                var sURL = window.location.href;
+                var sKunnr = this._getQueryParameter(sURL, "kunnr");
+                
+                if (sKunnr) {
+                    var oCartModel = this.getView().getModel("cart");
+                    oCartModel.setProperty("/Kunnr", sKunnr);
+                    MessageBox.information("현재 로그인한 고객코드: " + sKunnr);
+                }
+            },
+    
+            _getQueryParameter: function(sURL, sParam) {
+                var sURLParams = sURL.split('?')[1] || '';
+                var sQueryParams = sURLParams.split('&');
+                
+                for (var i = 0; i < sQueryParams.length; i++) {
+                    var sParamPair = sQueryParams[i].split('=');
+                    if (sParamPair[0] === sParam) {
+                        return decodeURIComponent(sParamPair[1]);
+                    }
+                }
+                return null;
+            },
+
+            // _onObjectMatched: function (oEvent) {
+            //     var oArgs = oEvent.getParameter("arguments");
+            //     var oQuery = oArgs["?query"];
+            //     if (oQuery && oQuery.kunnr) {
+            //         var sKunnr = decodeURIComponent(oQuery.kunnr);
+                    
+            //         var oCartModel = this.getView().getModel("cart");
+            //         oCartModel.setProperty("/Kunnr", sKunnr);
+            //     }
+            // },
     
             onRegularProductPress: function () {
                 // 일반 상품 섹션 클릭 시 실행할 코드

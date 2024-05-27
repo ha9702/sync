@@ -1,0 +1,35 @@
+<mvc:View controllerName="sync.zec.login.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="Page" title="{i18n>title}">
+        <content>
+            <VBox >
+                <Image src="{imageModel>/path}/images/SSP.png" width="200px" class="sapUiLargeMarginTop"/>
+            </VBox>
+            <FlexBox 
+                alignItems="Center"
+                justifyContent="Center"
+                width="100%"
+                height="auto"
+                class="sapUiContentPadding">
+                
+                <VBox 
+                    class="sapUiSmallMargin"
+                    width="300px">
+                    <items>
+                        <Title text="Login" titleStyle="H2" textAlign="Center" class="sapUiSmallMarginBottom" />
+                    
+                        <Label text="아이디 :" required="true" />
+                        <Input id="customerIdInput" placeholder="id" class="sapUiSmallMarginBottom" />
+                        <Label text="비밀번호 :" required="true" />
+                        <Input id="passwordInput" type="Password" placeholder="Password" class="sapUiSmallMarginBottom" />
+                        
+                        <Button text="Login" press="onSubmit" width="100%" class="sapUiTinyMarginTop" />
+                        <Button text="Sign up" press="onSignup" width="100%" class="sapUiTinyMarginTop" />
+                    </items>
+                </VBox>
+            </FlexBox>
+        </content>
+    </Page>
+                    
+</mvc:View>

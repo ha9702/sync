@@ -31,7 +31,7 @@
                         <HBox justifyContent="SpaceBetween" width="100%">
                             <HBox>
                             <Text text="{ path: 'cart>Quantity', type: 'sap.ui.model.odata.type.Decimal'} x" />
-                            <Image src="{cart>Image}" width="50px" height="50px"/>
+                            <Image src="{imageModel>/path}{cart>Image}" width="50px" height="50px"/>
                             <VBox>
                                 <Text text="{cart>Maktx}" />
                             </VBox>

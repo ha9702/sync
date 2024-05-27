@@ -24,7 +24,7 @@
                     <List id="summaryEntryList" items="{cart>/cartItems}" noDataText="{i18n>cartNoData}">
                         <items>
                             <ObjectListItem intro="{ path: 'cart>Quantity',
-                                                     type: 'sap.ui.model.odata.type.Decimal'} x" icon="{cart>Image}" title="{cart>Maktx}" number="{
+                                                     type: 'sap.ui.model.odata.type.Decimal'} x" icon="{imageModel>/path}{cart>Image}" title="{cart>Maktx}" number="{
                                 parts:[
                                     {path : 'cart>Netpr'},
                                     {path : 'cart>Waers'}

@@ -1,10 +1,12 @@
 <mvc:View
     controllerName="sync.zec.sales1.controller.Success"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form">
     <Page
         id="successPage"
         title="주문 완료!">
+        <Panel>
         <content>
             <Title title="주문 완료" level="H1" />
             <VBox class="sapUiSmallMargin">
@@ -13,5 +15,50 @@
                 <Button text="홈으로 돌아가기" press="onNavHome" />
             </VBox>
         </content>
+        </Panel>
+
+        <Panel>
+            <content>
+                <List id="summaryEntryList" items="{cart>/cartItems}" noDataText="{i18n>cartNoData}">
+                    <items>
+                        <ObjectListItem intro="{ path: 'cart>Quantity',
+                                                 type: 'sap.ui.model.odata.type.Decimal'} x" icon="{imageModel>/path}{cart>Image}" title="{cart>Maktx}" number="{
+                            parts:[
+                                {path : 'cart>Netpr'},
+                                {path : 'cart>Waers'}
+                            ],
+                            type:'sap.ui.model.type.Currency',
+                            formatOptions:{showMeasure: false}
+                        }" numberUnit="{cart>Waers}" class="sapUiNoMargin">
+                            <firstStatus>
+                                <ObjectStatus text="{cart>Status}" state="{cart>StatusState}"/>
+                            </firstStatus>
+                        </ObjectListItem>
+                    </items>
+                </List>
+            </content>
+        </Panel>
+
+        <f:SimpleForm ariaLabelledBy="totalPriceTitle">
+            <f:toolbar>
+                <Toolbar id="toolbarTotalPrice">
+                    <ToolbarSpacer/>
+                        <Title
+                        id="totalPriceTitle"
+                        level="H3"
+                        titleStyle="H4" text="총 금액 : " />
+                    <ObjectNumber number="{
+                        parts:[ 
+                            {path : 'cart>/totalPrice'},
+                            {path : 'cart>/cartItems/0/Waers'}
+                        ],
+                        type:'sap.ui.model.type.Currency',
+                        formatOptions:{showMeasure: false}
+                    }"
+                    numberUnit="{cart>/cartItems/0/Waers}" class="sapUiNoMargin"/>
+                </Toolbar>
+            </f:toolbar>
+        </f:SimpleForm>
+
     </Page>
 </mvc:View>

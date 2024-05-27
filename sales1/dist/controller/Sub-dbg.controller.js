@@ -244,6 +244,14 @@ sap.ui.define([
                 // 카트에 아이템이 없을 경우 메시지 표시
                 sap.m.MessageToast.show("장바구니에 상품이 없습니다.");
             }
+        },
+
+        onAvatarPress: function() {
+            var oCartModel = this.getView().getModel("cart");
+            var sKunnr = oCartModel.getProperty("/Kunnr");
+            if (sKunnr) {
+                MessageBox.information("현재 로그인한 고객코드: " + sKunnr);
+            }
         }
 
         // onSelectChange: function (oEvent) {
