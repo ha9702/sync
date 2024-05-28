@@ -165,7 +165,7 @@
 
         {
           "name": "approval",
-          "pattern": "approval",
+          "pattern": "approval:?query:",
           "target": "TargetApproval"
         }
 

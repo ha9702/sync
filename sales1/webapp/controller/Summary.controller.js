@@ -141,17 +141,14 @@ sap.ui.define([
             }, 0);
             var vatAmount = totalAmount * 0.1;
 
-
-            var resourcePath = jQuery.sap.getResourcePath("sync.zec.sales1"); // resource root
+            var resourcePath = window.location.href.split('summary')[0];
+            // var resourcePath = window.location.href;
+            // var resourcePath = jQuery.sap.getResourcePath("sync.zec.sales1"); // resource root
             console.log(resourcePath);
-            debugger;
-            var apporvalPath ;
-
-            if ( resourcePath === '..' ) {
-                apporvalPath = "http://localhost:3000/approval";
-            } else {
-                apporvalPath = "https://edu.bgis.co.kr:8443" + resourcePath + '/approval'
-            }
+            
+            var apporvalPath = resourcePath + 'approval';
+            var cancelPath = resourcePath + 'cancel';
+            var failPath = resourcePath + 'fail';
             
             const YOUR_ADMIN_KEY = '08b7e210754118e01e7f8cd100c48fc7'; // 카카오페이 Admin Key
             $.ajax({
@@ -167,16 +164,15 @@ sap.ui.define([
                     total_amount: totalAmount,
                     vat_amount: vatAmount,
                     tax_free_amount: 0,
-                    approval_url: apporvalPath, // 변경된 포트 번호 사용
-                    cancel_url: 'http://localhost:3000/cancel', // 변경된 포트 번호 사용
-                    fail_url: 'http://localhost:3000/fail', // 변경된 포트 번호 사용
+                    approval_url: apporvalPath , // 변경된 포트 번호 사용
+                    cancel_url: cancelPath, // 변경된 포트 번호 사용
+                    fail_url: failPath, // 변경된 포트 번호 사용
                 },
                 headers: {
                     Authorization: `KakaoAK ${YOUR_ADMIN_KEY}`,
                     'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
                 },
                 success: function (response) {
-                    debugger;
                     console.log("KakaoPay API response:", response);
                     if (response.next_redirect_pc_url) {
                         this._openPopup(response.next_redirect_pc_url);
@@ -185,7 +181,6 @@ sap.ui.define([
                     }
                 }.bind(this),
                 error: function (oError) {
-                    debugger;
                     console.error("Error during KakaoPay API call:", oError);
                     sap.m.MessageBox.error("Payment initiation failed: " + oError.responseText);
                 }
@@ -230,8 +225,14 @@ sap.ui.define([
 
         _handlePopupClose: function () {
             console.log("Popup closed");
+            var oCartModel = this.getOwnerComponent().getModel("cart");
             // 팝업이 닫힌 후에 결제가 완료되었는지 확인하고, 필요한 경우 성공 페이지로 이동합니다.
+            debugger;
+            if (oCartModel.oData.Flag === "approval") {
+            window.close();
             this._createEntityAndNavigateToSuccess();
+            }
+            
         },
 
         _createEntityAndNavigateToSuccess: function () {

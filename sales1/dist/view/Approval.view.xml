@@ -6,5 +6,10 @@
 	displayBlock="true"
 	height="100%"
 	busyIndicatorDelay="0"
->
+>	
+	<Page>
+		<content>
+			<Button text="결제완료" press="onApproval"/>
+		</content>
+	</Page>
 </mvc:View>

@@ -14,6 +14,24 @@ sap.ui.define([
             var oCartModel = this.getOwnerComponent().getModel("cart");
             this.getView().setModel(oCartModel, "cart");
 
+            var materialCodes = [];
+
+            // 세션 스토리지의 모든 키를 반복
+            for (var i = 0; i < sessionStorage.length; i++) {
+                var key = sessionStorage.key(i);
+                var materialCode = sessionStorage.getItem(key);
+                if (materialCode) {
+                    console.log("Material Code for " + key + ":", materialCode);
+                    // 배열에 materialCode 추가
+                    materialCodes.push(materialCode);
+                } else {
+                    console.log("Material Code not found for " + key);
+                }
+            }
+
+            // materialCodes 배열 사용
+            console.log("All Material Codes:", materialCodes);
+
             // 초기 레이아웃 설정
             var oLayoutModel = new JSONModel({
                 layout: LayoutType.TwoColumnsMidExpanded

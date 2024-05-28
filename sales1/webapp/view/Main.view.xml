@@ -3,7 +3,15 @@
     xmlns="sap.m">
     
             <Page id="idMasterPage" title="구매유형" class="noScroll">
+                <Panel id="idTopPanel">
+                    <Hbox id="idType" width="100%" justifyContent="Center" alignItems="Center">
+                        <Button id="idRec" text="설문" press="onRec"/>
+                        <Button id="idChat" text="상담" press="onChat"/>
+                    </HBox>
+                </Panel>
+                <Panel id="idBotPanel">
                 <content>
+
                     <HBox id="idProductSection" width="100%" justifyContent="Center" alignItems="Center">
                         <Image src="{imageModel>/path}/images/Regular.png" width="100%" press="onRegularProductPress"/>
                         
@@ -13,6 +21,7 @@
                     
 
                 </content>
+                </Panel>
             </Page>
         
 </mvc:View>    

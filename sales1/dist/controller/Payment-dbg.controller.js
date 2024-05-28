@@ -55,8 +55,11 @@ sap.ui.define([
         _onPatternMatched: function (oEvent) {
             var sCartItems = oEvent.getParameter("arguments").cartItems;
             var aCartItems = JSON.parse(decodeURIComponent(sCartItems));
+            var sSourceView = oEvent.getParameter("arguments").sourceView;
+
             var oCartModel = this.getView().getModel("cart");
             oCartModel.setProperty("/cartItems", aCartItems);
+            oCartModel.setProperty("/sourceView", sSourceView);  // Store the source view
 
             var sStepId = oEvent.getParameter("arguments").stepId;
             if (sStepId) {
@@ -92,7 +95,17 @@ sap.ui.define([
 
         onNavBack: function () {
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-            oRouter.navTo("RouteHome");
+            var oCartModel = this.getView().getModel("cart");
+            var sSourceView = oCartModel.getProperty("/sourceView");
+            // Navigate back to the source view
+            if (sSourceView === "home") {
+                oRouter.navTo("RouteHome");
+            } else if (sSourceView === "sub") {
+                oRouter.navTo("RouteSub");
+            } else {
+                // Default to home if source view is not set or recognized
+                oRouter.navTo("RouteHome");
+            }
         },
 
         validateCardInfo: function () {
