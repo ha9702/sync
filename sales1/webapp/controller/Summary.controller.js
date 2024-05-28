@@ -12,7 +12,7 @@ sap.ui.define([
             oRouter.getRoute("RouteSummary").attachPatternMatched(this._onPatternMatched, this);
 
             // 데이터 로드 후에 추가 설정
-            oCartModel.attachRequestCompleted(function() {
+            oCartModel.attachRequestCompleted(function () {
                 this._onDataLoaded();
             }.bind(this));
 
@@ -20,7 +20,7 @@ sap.ui.define([
 
         },
 
-        _onDataLoaded: function() {
+        _onDataLoaded: function () {
             console.log("Data loaded successfully");
             // 데이터 로드 후 실행할 추가 코드
         },
@@ -91,25 +91,25 @@ sap.ui.define([
 
         _prepareSummaryData: function (oCartModel) {
             var oCartItems = oCartModel.getProperty("/cartItems");
-                console.log(oCartModel);
+            console.log(oCartModel);
             // var oCartModel = this.getView()
             var oSummaryData = {
                 Vbeln: "",
-                Kunnr: "CUS9999999",
+                Kunnr: oCartModel.oData.Kunnr,
                 Subcmon: oCartModel.oData.Submonth.toString(),
                 toItem: oCartItems.map(function (item) {
                     return {
-                           
+
                         Matnr: item.Matnr,
                         Netpr: parseFloat(item.Netpr).toFixed(2),
                         Menge: parseFloat(item.Quantity).toFixed(2) // 타입 변환
                     };
-                    
+
                 })
-                
+
             };
             console.log(oSummaryData);
-            
+
             return oSummaryData;
 
         },
@@ -117,17 +117,66 @@ sap.ui.define([
         _callKakaoPayAPI: function (oSummaryData) {
             console.log("Calling KakaoPay API with data:", oSummaryData);
 
+
+            // curl --location 'https://open-api.kakaopay.com/online/v1/payment/ready' \
+            // --header 'Authorization: SECRET_KEY ${SECRET_KEY}' \
+            // --header 'Content-Type: application/json' \
+            // --data '{
+            //         "cid": "TC0ONETIME",
+            //         "partner_order_id": "partner_order_id",
+            //         "partner_user_id": "partner_user_id",
+            //         "item_name": "초코파이",
+            //         "quantity": "1",
+            //         "total_amount": "2200",
+            //         "vat_amount": "200",
+            //         "tax_free_amount": "0",
+            //         "approval_url": "https://developers.kakao.com/success",
+            //         "fail_url": "https://developers.kakao.com/fail",
+            //         "cancel_url": "https://developers.kakao.com/cancel"
+            //     }'
+
+
+            var totalAmount = oSummaryData.toItem.reduce(function (sum, item) {
+                return sum + (parseFloat(item.Netpr) * parseFloat(item.Menge));
+            }, 0);
+            var vatAmount = totalAmount * 0.1;
+
+
+            var resourcePath = jQuery.sap.getResourcePath("sync.zec.sales1"); // resource root
+            console.log(resourcePath);
+            debugger;
+            var apporvalPath ;
+
+            if ( resourcePath === '..' ) {
+                apporvalPath = "http://localhost:3000/approval";
+            } else {
+                apporvalPath = "https://edu.bgis.co.kr:8443" + resourcePath + '/approval'
+            }
+            
+            const YOUR_ADMIN_KEY = '08b7e210754118e01e7f8cd100c48fc7'; // 카카오페이 Admin Key
             $.ajax({
-                url: "http://localhost:3000/pay",
-                method: "POST",
+                url: 'https://kapi.kakao.com/v1/payment/ready',
+                method: 'POST',
                 contentType: "application/json",
-                data: JSON.stringify({
-                    amount: oSummaryData.toItem.reduce(function (sum, item) {
-                        return sum + (parseFloat(item.Netpr) * parseFloat(item.Menge));
-                    }, 0),
-                    item_name: "SSP 영양제"
-                }),
+                data: {
+                    cid: 'TC0ONETIME', // 테스트용 CID
+                    partner_order_id: 'partner_order_id',
+                    partner_user_id: 'partner_user_id',
+                    item_name: "SSP 영양제",
+                    quantity: 1,
+                    total_amount: totalAmount,
+                    vat_amount: vatAmount,
+                    tax_free_amount: 0,
+                    approval_url: apporvalPath, // 변경된 포트 번호 사용
+                    cancel_url: 'http://localhost:3000/cancel', // 변경된 포트 번호 사용
+                    fail_url: 'http://localhost:3000/fail', // 변경된 포트 번호 사용
+                },
+                headers: {
+                    Authorization: `KakaoAK ${YOUR_ADMIN_KEY}`,
+                    'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+                },
                 success: function (response) {
+                    debugger;
                     console.log("KakaoPay API response:", response);
                     if (response.next_redirect_pc_url) {
                         this._openPopup(response.next_redirect_pc_url);
@@ -135,17 +184,43 @@ sap.ui.define([
                         sap.m.MessageBox.error("Failed to initiate KakaoPay payment.");
                     }
                 }.bind(this),
-                error: function (error) {
-                    console.error("Error during KakaoPay API call:", error);
-                    sap.m.MessageBox.error("Payment initiation failed: " + error.responseText);
+                error: function (oError) {
+                    debugger;
+                    console.error("Error during KakaoPay API call:", oError);
+                    sap.m.MessageBox.error("Payment initiation failed: " + oError.responseText);
                 }
             });
+
+
+            // $.ajax({
+            //     url: "http://localhost:3000/pay",
+            //     method: "POST",
+            //     contentType: "application/json",
+            //     data: JSON.stringify({
+            //         amount: oSummaryData.toItem.reduce(function (sum, item) {
+            //             return sum + (parseFloat(item.Netpr) * parseFloat(item.Menge));
+            //         }, 0),
+            //         item_name: "SSP 영양제"
+            //     }),
+            //     success: function (response) {
+            //         console.log("KakaoPay API response:", response);
+            //         if (response.next_redirect_pc_url) {
+            //             this._openPopup(response.next_redirect_pc_url);
+            //         } else {
+            //             sap.m.MessageBox.error("Failed to initiate KakaoPay payment.");
+            //         }
+            //     }.bind(this),
+            //     error: function (error) {
+            //         console.error("Error during KakaoPay API call:", error);
+            //         sap.m.MessageBox.error("Payment initiation failed: " + error.responseText);
+            //     }
+            // });
         },
 
         _openPopup: function (url) {
             var popup = window.open(url, "KakaoPayPopup", "width=500,height=600");
 
-            var popupTick = setInterval(function() {
+            var popupTick = setInterval(function () {
                 if (popup.closed) {
                     clearInterval(popupTick);
                     this._handlePopupClose();
@@ -160,13 +235,14 @@ sap.ui.define([
         },
 
         _createEntityAndNavigateToSuccess: function () {
+
             var oSummaryData = JSON.parse(localStorage.getItem("summaryData")); // 로컬 스토리지에서 데이터 가져오기
 
             if (oSummaryData) {
                 console.log("Creating entity with data:", oSummaryData);
 
                 var oModel = this.getOwnerComponent().getModel();
-                var oView  = this.getView();
+                var oView = this.getView();
                 oView.setModel(oModel);
 
                 oModel.create("/SalesHeaderSet", oSummaryData, {

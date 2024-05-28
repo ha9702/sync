@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/mvc/Controller"],function(n){"use strict";return n.extend("sync.zec.sales1.controller.Approval",{onInit:function(){window.close()}})});
+//# sourceMappingURL=Approval.controller.js.map

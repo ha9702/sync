@@ -58,7 +58,7 @@ sap.ui.define([
                         },
                         error: function (oError) {
                             MessageBox.error("이미 가입한 회원입니다. 로그인 화면으로 이동해주세요.");
-
+                            
                             // this.getOwnerComponent().getRouter().navTo("RouteMain");
                         }
                     });

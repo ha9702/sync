@@ -215,7 +215,8 @@ sap.ui.define([
             if (aCartItems.length > 0) {
                 // 아이템이 존재할 경우 'Payment1' 뷰로 이동
                 oRouter.navTo("RoutePayment", {
-                    cartItems: encodeURIComponent(JSON.stringify(aCartItems))
+                    cartItems: encodeURIComponent(JSON.stringify(aCartItems)),
+                    sourceView: "home"
                 });
             } else {
                 // 카트에 아이템이 없을 경우 메시지 표시

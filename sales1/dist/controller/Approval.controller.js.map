@@ -1,0 +1,1 @@
+{"version":3,"file":"Approval.controller.js","names":["sap","ui","define","Controller","extend","onInit","window","close"],"sources":["Approval-dbg.controller.js"],"mappings":"AAAAA,IAAIC,GAAGC,OAAO,CACb,8BACE,SACFC,GAEA,aAEA,OAAOA,EAAWC,OAAO,sCAAuC,CAIzDC,OAAQ,WAEJC,OAAOC,OAEX,GAER","ignoreList":[]}

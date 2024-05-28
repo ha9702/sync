@@ -161,6 +161,12 @@
           "name": "synczecsales1",
           "pattern": "synczecsales1-display?kunnr={kunnr}",
           "target": "TargetSales"
+        },
+
+        {
+          "name": "approval",
+          "pattern": "approval",
+          "target": "TargetApproval"
         }
 
       ],
@@ -207,6 +213,13 @@
         "TargetSales": {
             "viewName": "Main",
             "viewLevel": 1
+        },
+        "TargetApproval": {
+          "viewName": "Approval",
+          "viewId": "approval",
+          "viewType": "XML",
+          "transition": "show",
+          "clearControlAggregation": false
         }
       }
     },

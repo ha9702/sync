@@ -236,10 +236,11 @@ sap.ui.define([
             var aCartItems = oCartModel.getProperty("/cartItems");
 
             if (aCartItems.length > 0) {
-                // 아이템이 존재할 경우 'Payment1' 뷰로 이동
-                oRouter.navTo("RoutePayment", {
-                    cartItems: encodeURIComponent(JSON.stringify(aCartItems))
-                });
+                // Pass the source view as a parameter
+            oRouter.navTo("RoutePayment", {
+                cartItems: encodeURIComponent(JSON.stringify(aCartItems)),
+                sourceView: "sub"
+            });
             } else {
                 // 카트에 아이템이 없을 경우 메시지 표시
                 sap.m.MessageToast.show("장바구니에 상품이 없습니다.");
