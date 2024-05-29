@@ -303,6 +303,27 @@ sap.ui.define([
             }, this);
         },
 
+        onStepActivated: function (oEvent) {
+            var oWizard = oEvent.getSource();
+            var oStep = oEvent.getParameter("step");
+            var sStepId = oStep.getId();
+
+            switch (sStepId) {
+                case this.createId("paymentTypeStep"):
+                    this._resetSteps();
+                    this.goToPaymentStep();
+                    break;
+                case this.createId("cardInfoStep"):
+                    this.validateCardInfo();
+                    break;
+                case this.createId("idDestination"):
+                    this.onInputChange();
+                    break;
+                default:
+                    break;
+            }
+        },
+
         goToPaymentStep: function () {
             var selectedKey = this.getView().getModel().getProperty("/SelectedPayment");
             var oWizard = this.byId("paymentWizard");
@@ -319,6 +340,8 @@ sap.ui.define([
                     break;
             }
             
+            // 위저드의 진행 단계를 업데이트
+            oWizard.validateStep(oStep);
         },
         
         setPaymentMethod: function (oEvent) {
@@ -328,7 +351,51 @@ sap.ui.define([
 
             // 각 스텝의 visible 속성을 업데이트
             this._updateStepVisibility(selectedKey);
+
+            // 결제 방식에 따라 스텝을 초기화하고 2단계로 돌아갑니다.
+            this._resetSteps();
             this.goToPaymentStep();
+
+            // 버튼 보이게 하기
+            this.getView().byId("id3").setVisible(true);
+            this.getView().byId("id4").setVisible(true);
+        },
+
+        _resetSteps: function () {
+            var oWizard = this.byId("paymentWizard");
+            var oStep2 = this.byId("paymentTypeStep");
+            var oStep3 = this.byId("cardInfoStep");
+            var oStep4 = this.byId("idDestination");
+        
+            // 스텝 초기화
+            oWizard.discardProgress(oStep2);
+            oWizard.discardProgress(oStep3);
+            oWizard.discardProgress(oStep4);
+
+            // 단계 3과 단계 4의 입력 필드 초기화
+            this._clearInputFields([
+                "creditCardHolderName",
+                "creditCardNumber",
+                "creditCardSecurityNumber",
+                "creditCardExpirationDate",
+                "idPostcode",
+                "idAddress",
+                "idDetailAddress",
+                "idExtraAddress"
+            ]);
+
+            // 2단계로 돌아가기
+            oWizard.goToStep(oStep2);
+        },
+
+        _clearInputFields: function (aInputIds) {
+            aInputIds.forEach(function (sId) {
+                var oInput = this.getView().byId(sId);
+                if (oInput) {
+                    oInput.setValue("");
+                    oInput.setValueState("None");
+                }
+            }, this);
         },
 
         _updateStepVisibility: function (selectedKey) {

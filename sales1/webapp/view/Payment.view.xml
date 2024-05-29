@@ -13,7 +13,7 @@
                     <Title text="결제화면" />
                 </contentMiddle>
                 <contentRight>
-                    <Button text="계속 쇼핑하기" press="onNavBack" type="Emphasized" />
+                    <Button text="계속 쇼핑하기" press="onNavBack" type="Emphasized" stepActivated="onStepActivated"/>
                 </contentRight>
             </Bar>
         </headerContent>
@@ -102,7 +102,7 @@
                     </buttons>
                 </SegmentedButton> -->
             </VBox>
-            <Button text="단계 3" press="onNextStep" />
+            <Button text="단계 3" press="onNextStep" id="id3" />
         </WizardStep>
 
 		<WizardStep
@@ -229,7 +229,7 @@
 				</layoutData>
 			</DatePicker>
 		</f:SimpleForm>
-		<Button text="단계 4" press="onNextStep" enabled="{cart>/isCardInfoValid}"/>
+		<Button text="단계 4" press="onNextStep" enabled="{cart>/isCardInfoValid}" id="id4"/>
 	</WizardStep>
 
             
@@ -237,11 +237,11 @@
 					id="idDestination"
 					>
             <VBox>
-                <Input id="idPostcode" placeholder="우편번호" liveChange=".onInputChange"/>
+                <Input id="idPostcode" placeholder="우편번호" liveChange=".onInputChange"  />
                 <Button text="우편번호 찾기" press=".onFindAddress" />
-				<Input id="idAddress" placeholder="주소" liveChange=".onInputChange"/>
+				<Input id="idAddress" placeholder="주소" liveChange=".onInputChange"  />
 				<Input id="idDetailAddress" placeholder="상세주소" liveChange=".onInputChange"/>
-				<Input id="idExtraAddress" placeholder="참고항목" liveChange=".onInputChange"/>
+				<Input id="idExtraAddress" placeholder="참고항목" liveChange=".onInputChange"  />
             </VBox>
             <Button id="checkButton" text="주문확인" press=".onCheck" enabled="false" />
         </WizardStep>

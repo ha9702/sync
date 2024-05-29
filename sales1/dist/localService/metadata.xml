@@ -32,6 +32,35 @@
                 <Property Name="Sdeldat" Type="Edm.DateTime" Nullable="false" Precision="7" sap:unicode="false" sap:label="배송 예정 날짜" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
                 <Property Name="Def" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="오더 ITEM 상태" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
             </EntityType>
+            <EntityType Name="ListItem" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Matnr"/>
+                </Key>
+                <Property Name="Matnr" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="자재코드" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Maktx" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="자재명" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="toSelect" Relationship="ZEC_GW001_SRV.Asso_List_Select" FromRole="FromRole_Asso_List_Select" ToRole="ToRole_Asso_List_Select"/>
+            </EntityType>
+            <EntityType Name="SelectItem" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Matnr"/>
+                    <PropertyRef Name="Maktx"/>
+                </Key>
+                <Property Name="Matnr" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="자재코드" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Maktx" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="자재명" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Netpr" Type="Edm.Decimal" Nullable="false" Precision="12" Scale="3" sap:unicode="false" sap:unit="Waers" sap:label="판매 상품 금액" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Waers" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="통화코드" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="currency-code"/>
+                <Property Name="Menge" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:unit="Meins" sap:label="수량" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Meins" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="단위" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/>
+            </EntityType>
+            <EntityType Name="SubItem" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Matnr"/>
+                </Key>
+                <Property Name="Matnr" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="자재코드" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Maktx" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="자재명" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Netpr" Type="Edm.Decimal" Nullable="false" Precision="12" Scale="3" sap:unicode="false" sap:unit="Waers" sap:label="판매 상품 금액" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Waers" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="통화코드" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="currency-code"/>
+            </EntityType>
             <EntityType Name="Item" sap:content-version="1">
                 <Key>
                     <PropertyRef Name="Matnr"/>
@@ -114,8 +143,23 @@
                     </Dependent>
                 </ReferentialConstraint>
             </Association>
+            <Association Name="Asso_List_Select" sap:content-version="1">
+                <End Type="ZEC_GW001_SRV.ListItem" Multiplicity="1" Role="FromRole_Asso_List_Select"/>
+                <End Type="ZEC_GW001_SRV.SelectItem" Multiplicity="*" Role="ToRole_Asso_List_Select"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_Asso_List_Select">
+                        <PropertyRef Name="Matnr"/>
+                    </Principal>
+                    <Dependent Role="ToRole_Asso_List_Select">
+                        <PropertyRef Name="Matnr"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
             <EntityContainer Name="ZEC_GW001_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
                 <EntitySet Name="SalesOrderSet" EntityType="ZEC_GW001_SRV.SalesOrder" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="ListItemSet" EntityType="ZEC_GW001_SRV.ListItem" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="SelectItemSet" EntityType="ZEC_GW001_SRV.SelectItem" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="SubItemSet" EntityType="ZEC_GW001_SRV.SubItem" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="ItemSet" EntityType="ZEC_GW001_SRV.Item" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="SalesHeaderSet" EntityType="ZEC_GW001_SRV.SalesHeader" sap:searchable="true" sap:pageable="false" sap:content-version="1"/>
                 <EntitySet Name="SalesItemSet" EntityType="ZEC_GW001_SRV.SalesItem" sap:searchable="true" sap:pageable="false" sap:content-version="1"/>
@@ -123,6 +167,10 @@
                 <AssociationSet Name="Asso_Header_ItemSet" Association="ZEC_GW001_SRV.Asso_Header_Item" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
                     <End EntitySet="SalesHeaderSet" Role="FromRole_Asso_Header_Item"/>
                     <End EntitySet="SalesItemSet" Role="ToRole_Asso_Header_Item"/>
+                </AssociationSet>
+                <AssociationSet Name="Asso_List_SelectSet" Association="ZEC_GW001_SRV.Asso_List_Select" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ListItemSet" Role="FromRole_Asso_List_Select"/>
+                    <End EntitySet="SelectItemSet" Role="ToRole_Asso_List_Select"/>
                 </AssociationSet>
             </EntityContainer>
             <atom:link rel="self" href="http://210.16.199.140:8001/sap/opu/odata/sap/ZEC_GW001_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>

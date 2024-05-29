@@ -13,24 +13,6 @@ sap.ui.define([
         onInit: function () {
             var oCartModel = this.getOwnerComponent().getModel("cart");
             this.getView().setModel(oCartModel, "cart");
-            
-            // var materialCodes = [];
-
-            // // 세션 스토리지의 모든 키를 반복
-            // for (var i = 0; i < sessionStorage.length; i++) {
-            //     var key = sessionStorage.key(i);
-            //     var materialCode = sessionStorage.getItem(key);
-            //     if (materialCode) {
-            //         console.log("Material Code for " + key + ":", materialCode);
-            //         // 배열에 materialCode 추가
-            //         materialCodes.push(materialCode);
-            //     } else {
-            //         console.log("Material Code not found for " + key);
-            //     }
-            // }
-
-            // // materialCodes 배열 사용
-            // console.log("All Material Codes:", materialCodes);
 
             // 초기 레이아웃 설정
             var oLayoutModel = new JSONModel({
@@ -43,8 +25,11 @@ sap.ui.define([
 
             oCartModel.setProperty("/productSelected", false);
             oCartModel.setProperty("/Submonth", 3); // 초기 구독 개월 수 설정
-            
+
+            this._addItemsFromLocalStorage();
         },
+
+
 
         onToggleCart: function (oEvent) {
             var oFlexibleColumnLayout = this.byId("flexibleColumnLayout");
@@ -55,6 +40,63 @@ sap.ui.define([
             } else {
                 oFlexibleColumnLayout.setLayout(LayoutType.TwoColumnsMidExpanded);
             }
+        },
+
+        _addItemsFromLocalStorage: function() {
+            var oCartModel = this.getView().getModel("cart");
+            var aCartItems = oCartModel.getProperty("/cartItems") || [];
+            var materialCodes = JSON.parse(localStorage.getItem("materialCodes")) || [];
+
+            console.log("Loaded material codes from local storage:", materialCodes);
+
+            var oModel = this.getOwnerComponent().getModel(); // Assuming the main model is defined in manifest
+
+            var promises = materialCodes.map(function(materialCode) {
+                return new Promise(function(resolve, reject) {
+                    console.log("Reading data for material code:", materialCode);
+                    oModel.read("/SubItemSet('" + materialCode + "')", {
+                        success: function(oData) {
+                            console.log("Data received for material code:", materialCode, oData);
+                            var oExistingItem = aCartItems.find(function(item) {
+                                return item.Matnr === oData.Matnr;
+                            });
+
+                            if (!oExistingItem) {
+                                var oNewItem = JSON.parse(JSON.stringify(oData));
+                                oNewItem.Matnr = oData.Matnr;
+                                oNewItem.Submonth = oCartModel.getProperty("/Submonth");
+                                oNewItem.Quantity = oCartModel.getProperty("/Submonth").toString(); // 초기 수량 설정
+                                oNewItem.Image = "/images/" + oData.Matnr + ".jpg"; // 이미지 경로 추가
+                                oNewItem.Netpr = (parseFloat(oData.Netpr) * 30);
+                                oNewItem.Waers = oData.Waers;
+
+                                aCartItems.push(oNewItem);
+                            }
+                            resolve();
+                        },
+                        error: function(error) {
+                            console.error("Error reading data for material code:", materialCode, error);
+                            reject(error);
+                        }
+                    });
+                });
+            });
+
+            Promise.all(promises).then(function() {
+                oCartModel.setProperty("/cartItems", aCartItems);
+                this._updateTotalPrice();
+                localStorage.removeItem("materialCodes"); // 로컬 스토리지 지우기
+                console.log("Cleared material codes from local storage");
+            }.bind(this)).catch(function(error) {
+                console.error("Error processing material codes:", error);
+            });
+
+            var oFlexibleColumnLayout = this.byId("flexibleColumnLayout");
+            oFlexibleColumnLayout.setLayout(LayoutType.ThreeColumnsMidExpanded);
+
+            var oCartToggleButton = this.byId("cartToggleButton");
+            oCartToggleButton.setPressed(true);
+
         },
 
         onAddToCart: function () {

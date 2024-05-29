@@ -262,6 +262,18 @@ sap.ui.define([
 
         onPurchase: function() {
             MessageToast.show("맞춤 영양제 구매하러 가기");
+            var materialCodes = [];
+            for (var i = 0; i < sessionStorage.length; i++) {
+                var key = sessionStorage.key(i);
+                var materialCode = sessionStorage.getItem(key);
+                if (materialCode) {
+                    materialCodes.push(materialCode);
+                }
+            }
+            localStorage.setItem("materialCodes", JSON.stringify(materialCodes));
+            console.log(materialCodes);
+            debugger;
+            window.close();  // 팝업 창 닫기
         },
 
         onConsult: function() {
