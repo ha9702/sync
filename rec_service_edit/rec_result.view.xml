@@ -1,0 +1,46 @@
+<mvc:View
+    controllerName="sync.zec.recservice.controller.rec_result"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+
+    <Page id="idResultPage" title="{i18n>title}">
+         <content>
+            <FlexBox id="idRFlexBox" class="centerContent" direction="Column">
+                <VBox id="idRVBox" class="sapUiSmallMargin innerBox">
+                    <Title id="idRTitle" text="{resultModel>/userDetails}" class="detailStyle" />
+                    <Title id="idRText" text="건강데이터로 분석한 {resultModel>/userName} 님은" />
+                    <HBox>
+                    <ObjectIdentifier title=' " '/>
+                    <ObjectIdentifier id="idRTitle2" title="{= ${resultModel>/customMessage} ? ' ' + ${resultModel>/customMessage} : ''}"
+                        level="H2" />
+                    <ObjectIdentifier title=' " '/>
+                    <Title text="이에요." class="resultText sapUiSmallMarginBottom" />
+                    </HBox>
+                    <List id="idResultList" items="{resultModel>/results}">
+                        <CustomListItem id="idRListItem">
+                            <HBox id="idRHBox">
+                                <Image src="{resultModel>imageUrl}" width="70px" height="70px" class="images" />
+                                <VBox id="idRVBox2">
+                                    <ObjectIdentifier id="idRTitle3" title="{resultModel>name}" level="H4" class="supplementsName" />
+                                    <Text id="idRText2" text="{resultModel>description}" />
+                                </VBox>
+                            </HBox>
+                        </CustomListItem>
+                    </List>
+                
+                    <!-- <Icon src="sap-icon://message-warning" size="1rem" /> -->
+                    <Text id="idRText3" text="{resultModel>/alreadyTakingMessage}" class="bAlreadyTakingMsg sapUiSmallMarginBottom" />
+
+                    <HBox id="idRHBox2" justifyContent="End">
+                        <Button id="idRButton" text="구매하러 가기 >" press="onPurchase" type="Default" class="bAlreadyTakingMsg"/>
+                    </HBox>
+                    <HBox id="idRHBox3" justifyContent="End">
+                        <Button id="idRButton2" text="전문가 상담 먼저 받아보기 >" press="onConsult" type="Default" class="bAlreadyTakingMsg"/>
+                    </HBox>
+
+                </VBox>
+            </FlexBox>
+        </content>
+    </Page>
+
+</mvc:View>

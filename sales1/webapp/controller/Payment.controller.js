@@ -97,10 +97,12 @@ sap.ui.define([
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
             var oCartModel = this.getView().getModel("cart");
             var sSourceView = oCartModel.getProperty("/sourceView");
+            var beforeView = oCartModel.oData.Before;
+            console.log(beforeView);
             // Navigate back to the source view
-            if (sSourceView === "home") {
+            if (beforeView === "home") {
                 oRouter.navTo("RouteHome");
-            } else if (sSourceView === "sub") {
+            } else if (beforeView === "sub") {
                 oRouter.navTo("RouteSub");
             } else {
                 // Default to home if source view is not set or recognized

@@ -165,8 +165,20 @@
 
         {
           "name": "approval",
-          "pattern": "approval:?query:",
+          "pattern": "approval{*all}",
           "target": "TargetApproval"
+        },
+
+        {
+          "name": "fail",
+          "pattern": "fail{*all}",
+          "target": "TargetFail"
+        },
+
+        {
+          "name": "cancel",
+          "pattern": "cancel",
+          "target": "TargetCancel"
         }
 
       ],
@@ -217,6 +229,20 @@
         "TargetApproval": {
           "viewName": "Approval",
           "viewId": "approval",
+          "viewType": "XML",
+          "transition": "show",
+          "clearControlAggregation": false
+        },
+        "TargetFail": {
+          "viewName": "Fail",
+          "viewId": "fail",
+          "viewType": "XML",
+          "transition": "show",
+          "clearControlAggregation": false
+        },
+        "TargetCancel": {
+          "viewName": "Cancel",
+          "viewId": "cancel",
           "viewType": "XML",
           "transition": "show",
           "clearControlAggregation": false

@@ -1,0 +1,41 @@
+<mvc:View xmlns:uxap="sap.uxap"
+    controllerName="sync.zec.recservice.controller.rec_service2"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+
+        <Page title="맞춤영양제 추천 서비스">
+
+            <content>
+                <FlexBox class="centerContent" direction="Column">
+                    <VBox class="innerBox">
+
+                        <!-- 마지막 이름 입력 page -->
+                        <VBox class="sapUiSmallMargin">
+                            <Text text="마지막으로 이름을 알려주세요!" level="H2" class="titleStyle" />
+                            <Text text="나의 맞춤 영양제에 적어드릴게요." />
+
+                            <Input placeholder="이름" id="idNameInput" value="{/userName}" class="sapUiSmallMarginTopBottom" width="200px" />
+
+                            <Text text="선택한 항목:" class="sapUiSmallMarginBottom" />
+                            <List items="{selectionModel>/selectedItems}">
+                                <StandardListItem title="{selectionModel>}" />
+                            </List>
+
+                            <Text text="{= '현재 복용 중인 약: ' + ${selectionModel>/medicationName}}" class="sapUiSmallMarginTopBottom" />
+
+                            <HBox justifyContent="End">
+                                <Toolbar >
+                                    <Button
+                                        text="결과 확인하러 가기 >"
+                                        type="Transparent"
+                                        press="onShowResult"  />
+                                </Toolbar>
+                            </HBox>
+                        </VBox>
+    
+                    </VBox>
+                </FlexBox>
+            </content>
+
+        </Page>
+</mvc:View>

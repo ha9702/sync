@@ -1,0 +1,16 @@
+<mvc:View
+	controllerName="sync.zec.sales1.controller.Cancel"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:c="sap.ui.core"
+	displayBlock="true"
+	height="100%"
+	busyIndicatorDelay="0"
+>
+<Page>
+    <content>
+        <Button text="결제완료" press="onApproval"/>
+    </content>
+</Page>
+
+</mvc:View>

@@ -1,0 +1,113 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:uxap="sap.uxap"
+    controllerName="sync.zec.recservice.controller.rec_service1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    
+    <Page id="idSurveyPage" title="맞춤영양제 추천 서비스">
+
+        <!-- 뒤 화면으로 돌아가는 아이콘  -->
+        <!-- <VBox class="sapUiSmallMargin" >
+            <HBox >
+                <Button icon="sap-icon://nav-back" type="Transparent" press="onNavBack" />
+            </HBox>
+        </VBox> -->
+
+        <content>
+            <FlexBox id="idSFlexBox" class="centerContent" direction="Column">
+                <VBox id="idSVBox" class="innerBox">
+                    
+                    <!-- 건강상태 고르기 -->
+                    <VBox id="idSVBox2" class="sapUiSmallMargin">
+                        <Title id="idVTitle" text="개선하고 싶은 부분을 골라주세요" level="H2" class="titleStyle"/>
+                        <Text id="idVText" text="최대 5개까지 선택할 수 있어요." class="sapUiSmallMarginBottom"/>
+
+                    <VBox id="idSVBox3">
+                        <Label id="idSLabel" text="건강검진 항목 관련" class="surveyMargin"/>
+                        <HBox id="idSHBox" class="sapUiSmallMarginBottom" justifyContent="SpaceBetween" >
+                            <Toolbar id="idSToolbar" >
+                                <ToggleButton id="idTB" text="간 건강" press="onTogglePress" />
+                                <ToggleButton id="idTB2" text="콜레스테롤" press="onTogglePress" />
+                                <ToggleButton id="idTB3" text="혈압 관리" press="onTogglePress"  />
+                                <ToggleButton id="idTB4" text="혈당 관리" press="onTogglePress"  />
+                            </Toolbar>
+                        </HBox>
+                    </VBox>
+
+                    <VBox>
+                        <Label text="주요 장기 관련" class="surveyMargin"/>
+                        <HBox class="sapUiSmallMarginBottom" wrap="Wrap">
+                            <Toolbar >
+                                <ToggleButton text="뇌 건강" press="onTogglePress" />
+                                <ToggleButton text="눈 건강" press="onTogglePress" />
+                                <ToggleButton text="뼈 건강" press="onTogglePress" />
+                                <ToggleButton text="위장 건강" press="onTogglePress" />
+                            </Toolbar>
+                        </HBox>
+                    </VBox>
+
+                    <VBox>
+                        <Label text="일상생활 관련" class="surveyMargin"/>
+                        <HBox class="sapUiSmallMarginBottom" wrap="Wrap">
+                            <Toolbar>
+                                <ToggleButton text="관절/근육" press="onTogglePress" />
+                                <ToggleButton text="면역력" press="onTogglePress" />
+                                <ToggleButton text="스트레스" press="onTogglePress" />
+                                <ToggleButton text="모발" press="onTogglePress" />
+                                <ToggleButton text="수면" press="onTogglePress" />
+                                <ToggleButton text="피부" press="onTogglePress" />
+                                <ToggleButton text="체지방관리" press="onTogglePress" />
+                            </Toolbar>
+                        </HBox>
+                    </VBox>
+
+                    </VBox>
+
+
+                    <!-- 성별 고르기 -->
+                    <VBox class="sapUiSmallMargin" >
+                        <Title text="성별을 알려주세요." class="titleStyle" />
+                        <HBox justifyContent="Start" alignItems="Center" >
+                            <SegmentedButton selectionChange=".onGenderSelect" class="surveyMargin" >
+                                <Button text="남성" icon="sap-icon://employee" type="Transparent" press="onGenderSelect" width="190px" />
+                                <Button text="여성" icon="sap-icon://doctor" type="Transparent" press="onGenderSelect" width="190px" />
+                            </SegmentedButton>
+                        </HBox>
+                    </VBox>
+
+                    <!-- 연령대 고르기 -->
+                    <VBox class="sapUiSmallMargin">
+                        <Title text="연령대를 알려주세요." class="titleStyle" />
+
+                        <SegmentedButton selectionChange=".onAgeSelect" class="surveyMargin" >
+                            <Button text="20대" press="onAgeSelect" />
+                            <Button text="30대" press="onAgeSelect" />
+                            <Button text="40대" press="onAgeSelect" />
+                            <Button text="50대" press="onAgeSelect" />
+                            <Button text="60대 이상" press="onAgeSelect" />
+                        </SegmentedButton>
+                    </VBox>
+
+                    <VBox>
+                        <Title text="* 복용 중인 약이 있나요?" class="customMargin" />
+                        <Text text="복용 중인 약이 있다면, 검진 결과와 함께 체크해 드릴게요." class="customMargin2" />
+                        <ToggleButton text="먹고 있어요" pressed="{viewModel/medication}" press="onMedicationToggle" class="customMargin2" />
+                            <Input placeholder="복용 중인 약을 알려주세요." visible="{viewModel>/showMedicationInput}" class="sapUiSmallMargin" width="400px"
+                                valueLiveUpdate="true" value="{viewModel>/medicationName}" liveChange="onMedicationInput" />
+                    </VBox>
+
+                    <HBox justifyContent="End">
+                        <Toolbar >
+                            <Button
+                                text="next >"
+                                type="Transparent"
+                                width="100px"
+                                press="onNextPress"  />
+                        </Toolbar>
+                    </HBox>
+
+                </VBox>
+            </FlexBox>
+        </content>
+
+    </Page>
+</mvc:View>

@@ -211,6 +211,10 @@ sap.ui.define([
             var oRouter = UIComponent.getRouterFor(this);
             var oCartModel = this.getView().getModel("cart");
             var aCartItems = oCartModel.getProperty("/cartItems");
+            
+            oCartModel.setProperty("/Before", "home");
+            oCartModel.refresh(true); // 변경 사항 즉시 반영
+            console.log(oCartModel.getProperty("/Before"));
 
             if (aCartItems.length > 0) {
                 // 아이템이 존재할 경우 'Payment1' 뷰로 이동

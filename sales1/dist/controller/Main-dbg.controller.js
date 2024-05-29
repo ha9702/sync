@@ -28,7 +28,7 @@ sap.ui.define([
                         sKunnr = decodeURIComponent(sKunnr);
                         var oCartModel = this.getView().getModel("cart");
                         oCartModel.setProperty("/Kunnr", sKunnr);
-                        sap.m.MessageBox.information("현재 로그인한 고객코드: " + sKunnr);
+                        
                     }
                 }
             },
@@ -71,6 +71,28 @@ sap.ui.define([
                 // 구독 상품 섹션 클릭 시 Sub.view로 이동
                 var oRouter = UIComponent.getRouterFor(this);
                 oRouter.navTo("RouteSub");
+            },
+
+            onRec: function() {
+                var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
+                var oCartModel = this.getView().getModel("cart");
+                var sKunnr = oCartModel.getProperty("/Kunnr");
+
+                var hash = oCrossAppNavigator.hrefForExternal({
+                    target: {
+                        semanticObject: "synczecrecservice",
+                        action: "display"
+                    },
+                    params: {
+                        kunnr: sKunnr
+                    }
+                });
+
+                oCrossAppNavigator.toExternal({
+                    target: {
+                        shellHash: hash
+                    }
+                });
             }
         });
     });

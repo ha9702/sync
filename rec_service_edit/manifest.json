@@ -1,0 +1,166 @@
+{
+  "_version": "1.17.0",
+  "sap.app": {
+    "id": "sync.zec.sales1",
+    "crossNavigation": {
+      "inbounds": {
+        "display": {
+          "semanticObject": "synczecrecservice",
+          "action": "display",
+          "signature": {
+            "parameters": {
+              "kunnr": {
+                "required": true
+              }
+            }
+          },
+          "target": {
+            "shellHash": "#synczecrecservice-display?kunnr={kunnr}"
+          }
+        }
+      }
+    },
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.12.5",
+      "toolsId": "613ba981-56f4-4c0a-8b8d-3585a7be240e"
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.71.68",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.suite.ui.generic.template": {},
+        "sap.ui.comp": {},
+        "sap.ui.generic.app": {},
+        "sap.ui.table": {},
+        "sap.ushell": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "sync.zec.recservice.i18n.i18n"
+        }
+      },
+      
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          
+        }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "sync.zec.recservice.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "bypassed": {
+          "target": "notFound"
+        }
+      },
+      "routes": [
+        {
+          "pattern": "rec_start?kunnr={kunnr}",
+          "name": "rec_start",
+          "target": "rec_start"
+        },
+        {
+          "pattern": "rec_service1",
+          "name": "rec_service1",
+          "target": "rec_service1"
+        },
+        {
+          "pattern": "rec_service2",
+          "name": "rec_service2",
+          "target": "rec_service2"
+        },
+        {
+          "pattern": "rec_result",
+          "name": "rec_result",
+          "target": "rec_result"
+        }
+      ],
+      "targets": {
+        "rec_start": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewLevel": 1,
+          "viewId": "rec_start",
+          "viewName": "rec_start"
+        },
+        "rec_service1": {
+          "viewName": "rec_service1",
+          "viewId": "rec_service1",
+          "viewLevel": 2
+        },
+        "rec_service2": {
+          "viewName": "rec_service2",
+          "viewId": "rec_service2",
+          "viewLevel": 3
+        },
+        "rec_result": {
+          "viewId": "rec_result",
+          "viewName": "rec_result"
+        },
+        "notFound": {
+          "viewName": "notFound",
+          "viewId": "notFound",
+          "viewLevel": 5
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "sync.zec.recservice.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    }
+  }
+}

@@ -46,6 +46,11 @@ sap.ui.define([
                 // set the OData model
                 // var oModel = new ODataModel("/sap/opu/odata/sap/ZEC_GW001_SRV/");
                 // this.setModel(oModel);
+                // 글로벌 모델 설정
+                var oGlobalModel = new JSONModel({
+                    approval: ""
+                });
+                this.setModel(oGlobalModel, "globalModel");
             }
         });
     }

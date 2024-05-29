@@ -13,6 +13,26 @@ sap.ui.define([
         onInit: function () {
             var oCartModel = this.getOwnerComponent().getModel("cart");
             this.getView().setModel(oCartModel, "cart");
+            
+            this._extractKunnrFromHash();
+
+            // var materialCodes = [];
+
+            // // 세션 스토리지의 모든 키를 반복
+            // for (var i = 0; i < sessionStorage.length; i++) {
+            //     var key = sessionStorage.key(i);
+            //     var materialCode = sessionStorage.getItem(key);
+            //     if (materialCode) {
+            //         console.log("Material Code for " + key + ":", materialCode);
+            //         // 배열에 materialCode 추가
+            //         materialCodes.push(materialCode);
+            //     } else {
+            //         console.log("Material Code not found for " + key);
+            //     }
+            // }
+
+            // // materialCodes 배열 사용
+            // console.log("All Material Codes:", materialCodes);
 
             // 초기 레이아웃 설정
             var oLayoutModel = new JSONModel({
@@ -26,6 +46,55 @@ sap.ui.define([
             oCartModel.setProperty("/productSelected", false);
             oCartModel.setProperty("/Submonth", 3); // 초기 구독 개월 수 설정
             
+        },
+
+        _extractKunnrFromHash: function () {
+            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+            var oRoute = oRouter.getRoute("RouteSub");
+            oRoute.attachPatternMatched(this._onObjectMatched, this);
+        },
+
+        _onObjectMatched: function () {
+            var sKunnr = oEvent.getParameter("arguments").kunnr;
+            if (sKunnr) {
+                var oCartModel = this.getView().getModel("cart");
+                oCartModel.setProperty("/Kunnr", sKunnr);
+
+                this._addItemsFromSessionStorage();
+    }
+        },
+
+        _addItemsFromSessionStorage: function() {
+            var oCartModel = this.getView().getModel("cart");
+            var aCartItems = oCartModel.getProperty("/cartItems") || [];
+            var materialCodes = {};
+        
+            for (var i = 0; i < sessionStorage.length; i++) {
+                var key = sessionStorage.key(i);
+                var materialCode = sessionStorage.getItem(key);
+                if (materialCode) {
+                    materialCodes[materialCode] = true;
+                }
+            }
+        
+            var oList = this.getView().byId("Sub").byId("idBotPanel").getItems();
+            oList.forEach(function(oItem) {
+                var oProduct = oItem.getBindingContext().getObject();
+                if (materialCodes[oProduct.Matnr]) {
+                    var oExistingItem = aCartItems.find(function(item) {
+                        return item.Matnr === oProduct.Matnr;
+                    });
+        
+                    if (!oExistingItem) {
+                        var oNewItem = JSON.parse(JSON.stringify(oProduct));
+                        oNewItem.Quantity = 1; // 초기 수량 설정
+                        aCartItems.push(oNewItem);
+                    }
+                }
+            });
+        
+            oCartModel.setProperty("/cartItems", aCartItems);
+            this._updateTotalPrice();
         },
 
         onToggleCart: function (oEvent) {
@@ -234,6 +303,10 @@ sap.ui.define([
             var oRouter = UIComponent.getRouterFor(this);
             var oCartModel = this.getView().getModel("cart");
             var aCartItems = oCartModel.getProperty("/cartItems");
+            
+            oCartModel.setProperty("/Before", "sub");
+            oCartModel.refresh(true); // 변경 사항 즉시 반영
+            console.log(oCartModel.getProperty("/Before"));
 
             if (aCartItems.length > 0) {
                 // Pass the source view as a parameter

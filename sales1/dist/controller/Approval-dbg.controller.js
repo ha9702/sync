@@ -24,20 +24,28 @@ sap.ui.define([
                 console.error("No pg_token found in URL");
             }
 
-            var oCartModel = this.getOwnerComponent().getModel("cart");
-            this.getView().setModel(oCartModel, "cart");
+            if (window.opener && typeof window.opener.setApprovalFlag === "function") {
+                window.opener.setApprovalFlag("approval");
+                console.log("Approval flag set in globalModel from popup");
+            } else {
+                console.error("No opener window or setApprovalFlag function found");
+            }
+
+            window.close();
+
+            // 글로벌 모델에 값을 설정
+            // var oCartModel = window.opener.sap.ui.getCore().getModel("cart");
+            // oCartModel.setProperty("/Flag", "approval");
+            // oCartModel.refresh(true); // 변경 사항 즉시 반영
+            // console.log("Approval flag set in globalModel");
+
+            // window.close();
         },
 
         _processApproval: function (pg_token) {
             console.log("Processing approval with pg_token:", pg_token);
             // pg_token을 이용해 필요한 처리를 수행합니다.
             // 예: 서버에 pg_token을 전송하여 결제 승인 처리
-        },
-
-        onApproval: function (oEvent) {
-            console.log("Attempting to close window");
-            window.close();
-            console.log("Window close called");
         }
 	});
 });

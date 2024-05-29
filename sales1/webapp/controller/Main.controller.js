@@ -28,34 +28,10 @@ sap.ui.define([
                         sKunnr = decodeURIComponent(sKunnr);
                         var oCartModel = this.getView().getModel("cart");
                         oCartModel.setProperty("/Kunnr", sKunnr);
-                        sap.m.MessageBox.information("현재 로그인한 고객코드: " + sKunnr);
+                        
                     }
                 }
             },
-    
-            // _getQueryParameter: function(sURL, sParam) {
-            //     var sURLParams = sURL.split('?')[1] || '';
-            //     var sQueryParams = sURLParams.split('&');
-                
-            //     for (var i = 0; i < sQueryParams.length; i++) {
-            //         var sParamPair = sQueryParams[i].split('=');
-            //         if (sParamPair[0] === sParam) {
-            //             return decodeURIComponent(sParamPair[1]);
-            //         }
-            //     }
-            //     return null;
-            // },
-
-            // _onObjectMatched: function (oEvent) {
-            //     var oArgs = oEvent.getParameter("arguments");
-            //     var oQuery = oArgs["?query"];
-            //     if (oQuery && oQuery.kunnr) {
-            //         var sKunnr = decodeURIComponent(oQuery.kunnr);
-                    
-            //         var oCartModel = this.getView().getModel("cart");
-            //         oCartModel.setProperty("/Kunnr", sKunnr);
-            //     }
-            // },
     
             onRegularProductPress: function () {
                 // 일반 상품 섹션 클릭 시 실행할 코드
@@ -72,5 +48,27 @@ sap.ui.define([
                 var oRouter = UIComponent.getRouterFor(this);
                 oRouter.navTo("RouteSub");
             }
+
+            // onRec: function() {
+                
+            //     var oCartModel = this.getView().getModel("cart");
+            //     var sKunnr = oCartModel.getProperty("/Kunnr");
+
+            //     var hash = oCrossAppNavigator.hrefForExternal({
+            //         target: {
+            //             semanticObject: "synczecrecservice",
+            //             action: "display"
+            //         },
+            //         params: {
+            //             kunnr: sKunnr
+            //         }
+            //     });
+
+            //     oCrossAppNavigator.toExternal({
+            //         target: {
+            //             shellHash: hash
+            //         }
+            //     });
+            // }
         });
     });

@@ -18,6 +18,14 @@ sap.ui.define([
 
             this.getView().setModel(oCartModel, "cart");
 
+            // 부모 창에서 접근 가능한 함수 설정
+            window.setApprovalFlag = function (flag) {
+                var oGlobalModel = this.getOwnerComponent().getModel("globalModel");
+                oGlobalModel.setProperty("/approval", flag);
+                oGlobalModel.refresh(true); // 변경 사항 즉시 반영
+                console.log("Approval flag set in globalModel from popup");
+            }.bind(this);
+
         },
 
         _onDataLoaded: function () {
@@ -91,11 +99,12 @@ sap.ui.define([
 
         _prepareSummaryData: function (oCartModel) {
             var oCartItems = oCartModel.getProperty("/cartItems");
-            console.log(oCartModel);
+            var kunnr = oCartModel.oData.Kunnr.substr(0, 10);
+            console.log(kunnr);
             // var oCartModel = this.getView()
             var oSummaryData = {
                 Vbeln: "",
-                Kunnr: oCartModel.oData.Kunnr,
+                Kunnr: kunnr,
                 Subcmon: oCartModel.oData.Submonth.toString(),
                 toItem: oCartItems.map(function (item) {
                     return {
@@ -225,12 +234,19 @@ sap.ui.define([
 
         _handlePopupClose: function () {
             console.log("Popup closed");
-            var oCartModel = this.getOwnerComponent().getModel("cart");
-            // 팝업이 닫힌 후에 결제가 완료되었는지 확인하고, 필요한 경우 성공 페이지로 이동합니다.
-            debugger;
-            if (oCartModel.oData.Flag === "approval") {
-            window.close();
-            this._createEntityAndNavigateToSuccess();
+            var oGlobalModel = this.getOwnerComponent().getModel("globalModel");
+            var bApproval = oGlobalModel.getProperty("/approval");
+            console.log("Approval flag value from globalModel:", bApproval) ;
+
+            if (bApproval === "approval") {
+                console.log("Approval flag approval");
+                this._createEntityAndNavigateToSuccess();
+            } else if (bApproval === "fail") {
+                console.log("Approval flag fail");
+                MessageBox.error("결제에 실패했습니다.");
+            } else {
+                console.log("Approval flag null");
+                MessageBox.information("결제가 취소되었습니다.");
             }
             
         },

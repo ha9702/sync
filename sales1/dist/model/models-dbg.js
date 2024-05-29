@@ -28,7 +28,9 @@ sap.ui.define([
                     SelectedPayment: "Card",
                     Submonth: 0,
                     pillNetpr: 0,
-                    Kunnr: ""
+                    Kunnr: "",
+                    Flag: "",
+                    Before: ""
                 });
                 oCartModel.setDefaultBindingMode("TwoWay");
                 return oCartModel;

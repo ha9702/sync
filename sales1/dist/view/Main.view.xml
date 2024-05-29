@@ -1,18 +1,35 @@
 <mvc:View  controllerName="sync.zec.sales1.controller.Main"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout">
     
-            <Page id="idMasterPage" title="구매유형" class="noScroll">
-                <content>
-                    <HBox id="idProductSection" width="100%" justifyContent="Center" alignItems="Center">
-                        <Image src="{imageModel>/path}/images/Regular.png" width="100%" press="onRegularProductPress"/>
-                        
-                        <Image src="{imageModel>/path}/images/Sub.png" width="100%" press="onSubscriptionProductPress"/>
-                        
-                    </HBox>
-                    
-
-                </content>
-            </Page>
+    <Page id="idMasterPage" class="noScroll">
+        <headerContent>
+            <Bar>
+                <contentLeft>
+                    <Image src="{imageModel>/path}/images/SSP.png" />
+                </contentLeft>
+                <contentMiddle>
+                    <Button text="설문조사 하러가기" press="onRec"/>
+                    <Button text="상담 하러가기" press="onChat"/>
+                </contentMiddle>
+                <contentRight>
+                    <Button text="계속 쇼핑하기" press="onNavBack" type="Emphasized" />
+                </contentRight>
+            </Bar>
+        </headerContent>
+        <content>
+        <l:Grid id="idBotPanel" defaultSpan="XL6 L6 M6 S12" hSpacing="1" vSpacing="1">
+            <l:content>
+                <HBox id="idProductSection1" justifyContent="Center" alignItems="Center">
+                    <Image src="{imageModel>/path}/images/Regular.png" width="100%" press="onRegularProductPress"/>
+                </HBox>
+                <HBox id="idProductSection2" justifyContent="Center" alignItems="Center">
+                    <Image src="{imageModel>/path}/images/Sub.png" width="100%" press="onSubscriptionProductPress"/>
+                </HBox>
+            </l:content>
+        </l:Grid>
+        </content>
+    </Page>
         
 </mvc:View>    

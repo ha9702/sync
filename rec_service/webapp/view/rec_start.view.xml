@@ -1,0 +1,24 @@
+<mvc:View
+    controllerName="sync.zec.recservice.controller.rec_start"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+
+    <Page>
+        <content>
+            <FlexBox justifyContent="Center" alignItems="Center" class="startViewContent">
+                <VBox class="startViewBox" alignItems="Center">
+
+                    <HBox alignItems="Start">
+                        <Image src="{imageModel>/path}/images/SSP.png" width="70px" height="70px" class="sapUiSmallMarginEnd"/>
+                    </HBox>
+
+                    <Title text="개인 맞춤 SSP조합 추천받기" level="H1" class="startTitle"/>
+                    <Text text="나의 건강상태에 맞는 추천 건강기능식품을 확인해보세요!" class="startSubtitle"/>
+                    <Text text="예상 소요시간: 2분" class="startDuration"/>
+                    <Button text="시작하기" press="onStartPress" type="Emphasized" class="startButton" width="100px"/>
+                    <!-- <Button text="그냥 영양제 쇼핑하러 갈래요" type="Transparent" class="shopButton"/> -->
+                </VBox>
+            </FlexBox>
+        </content>
+    </Page>
+</mvc:View>
