@@ -333,8 +333,12 @@ sap.ui.define([
             switch (selectedKey) {
                 case "KakaoPay":
                     oStep.setNextStep(this.byId("idDestination"));
+                    console.log("casekakao");
                     break;
                 case "Card":
+                    oStep.setNextStep(this.byId("cardInfoStep"));
+                    console.log("casecard");
+                    break;
                 default:
                     oStep.setNextStep(this.byId("cardInfoStep"));
                     break;
@@ -412,6 +416,12 @@ sap.ui.define([
                     oView.byId("idDestination").setIcon("sap-icon://shipping-status");
                     break;
                 case "Card":
+                    oView.byId("cardInfoStep").setVisible(true);
+                    oView.byId("idDestination").setVisible(true);
+                    oView.byId("paymentTypeStep").setIcon("sap-icon://money-bills");
+                    oView.byId("cardInfoStep").setIcon("sap-icon://credit-card");
+                    oView.byId("idDestination").setIcon("sap-icon://shipping-status");
+                    break;
                 default:
                     oView.byId("cardInfoStep").setVisible(true);
                     oView.byId("idDestination").setVisible(true);

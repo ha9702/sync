@@ -272,7 +272,7 @@ sap.ui.define([
             }
             localStorage.setItem("materialCodes", JSON.stringify(materialCodes));
             console.log(materialCodes);
-            debugger;
+            
             window.close();  // 팝업 창 닫기
         },
 
