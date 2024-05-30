@@ -160,8 +160,8 @@ sap.ui.define([
             var sLayout = oLayoutModel.getProperty("/layout");
 
             if (oEvent.name === "Phone") {
-                if (sLayout !== LayoutType.OneColumn) {
-                    oLayoutModel.setProperty("/layout", LayoutType.OneColumn);
+                if (sLayout !== LayoutType.TwoColumnsStartExpanded) {
+                    oLayoutModel.setProperty("/layout", LayoutType.TwoColumnsStartExpanded);
                 }
             } else if (oEvent.name === "Tablet") {
                 if (sLayout !== LayoutType.TwoColumnsStartExpanded) {
@@ -267,10 +267,20 @@ sap.ui.define([
 
         onAvatarPress: function() {
             var oCartModel = this.getView().getModel("cart");
-            var sKunnr = oCartModel.getProperty("/Kunnr");
+            var sKunnr = oCartModel.getProperty("/Kunnr").substr(0, 10);
             if (sKunnr) {
                 MessageBox.information("현재 로그인한 고객코드: " + sKunnr);
             }
+        },
+
+        onMain: function() {
+            var oRouter = UIComponent.getRouterFor(this);
+            oRouter.navTo("RouteMain", {}, true); // main view로 네비게이션
+            
+            // 해시 값을 유지한 채로 페이지를 새로고침
+            setTimeout(function() {
+                location.reload();
+            }, 500);
         }
     });
 });

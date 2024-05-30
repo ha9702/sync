@@ -34,7 +34,12 @@
             <Page title="{cart>/selectedProduct/Maktx}">
                 <customHeader>
                     <Bar>
-                        
+                        <contentLeft>
+                            <Button
+                                icon="sap-icon://home"
+                                press="onMain"
+                            />
+                        </contentLeft>
                         <contentRight>
                             <Button
                                 icon="sap-icon://customer"

@@ -14,7 +14,7 @@
                     <Button text="상담 하러가기" press="onChat"/>
                 </contentMiddle>
                 <contentRight>
-                    <Button text="계속 쇼핑하기" press="onNavBack" type="Emphasized" />
+                    
                 </contentRight>
             </Bar>
         </headerContent>

@@ -80,28 +80,6 @@
 						<SegmentedButtonItem id="payViaKakao" key="KakaoPay" text="카카오페이"/>
 					</items>
 				</SegmentedButton>
-				<!-- <RadioButtonGroup id="paymentMethodSelection" select="discardAndApplyPath">
-					<buttons> -->
-						<!-- <RadioButton text="카드" data-paymentType="Card" />
-						<RadioButton text="카카오페이" data-paymentType="KakaoPay" /> -->
-						<!-- <RadioButton text="itemsStep->paymentTypeStep->cardInfoStep->idDestination" />
-						<RadioButton text="itemsStep->paymentTypeStep->idDestination" />
-					</buttons>
-				</RadioButtonGroup> -->
-                <!-- <SegmentedButton select="discardAndApplyPath" id="paymentMethodSelection" >
-                    <buttons>
-                        <Button text="카드" press="onPaymentTypeSelect">
-                            <customData>
-                                <core:CustomData key="paymentType" value="Card"/>
-                            </customData>
-                        </Button>
-                        <Button text="카카오페이" press="onPaymentTypeSelect">
-                            <customData>
-                                <core:CustomData key="paymentType" value="KakaoPay"/>
-                            </customData>
-                        </Button>
-                    </buttons>
-                </SegmentedButton> -->
             </VBox>
             <Button text="단계 3" press="onNextStep" id="id3" />
         </WizardStep>
@@ -114,7 +92,8 @@
 			visible="{= ${/SelectedPayment} === 'Card'}" >
 		<f:SimpleForm
 			editable="true"
-			layout="ResponsiveGridLayout">
+			layout="ResponsiveGridLayout"
+			id="idCardInfo">
 			<Label
 				labelFor="creditCardHolderName"
 				text="{i18n>checkoutCreditCardName}"
@@ -251,7 +230,11 @@
 	<footer>
 		<Bar>
 			<contentLeft>
-				<Button id="openMessagePopover" icon="sap-icon://message-popup" press="onMessagePopoverPress" />
+				<Button id="openMessagePopover" 
+						icon="sap-icon://message-popup" 
+						press="onMessagePopoverPress" 
+						text="{=${message>/}.length}"
+						visible="{=!!${message>/}.length}"/>
 			</contentLeft>
 		</Bar>
 	</footer>

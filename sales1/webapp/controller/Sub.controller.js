@@ -26,7 +26,11 @@ sap.ui.define([
             oCartModel.setProperty("/productSelected", false);
             oCartModel.setProperty("/Submonth", 3); // 초기 구독 개월 수 설정
 
-            this._addItemsFromLocalStorage();
+            if (localStorage.getItem("materialCodes")) {
+                this._addItemsFromLocalStorage();
+            }
+
+            // this._addItemsFromLocalStorage();
         },
 
 
@@ -181,46 +185,6 @@ sap.ui.define([
             oCartModel.setProperty("/selectedProduct/pillNetpr", parseInt(oProduct.Netpr) )
             oCartModel.setProperty("/productSelected", true);
 
-            // var oSelect = this.byId("idToSelect");
-            // oSelect.bindElement({
-            //     path: "/ListItemSet('" + oProduct.Matnr + "')"
-            // });
-
-            // 바인딩 경로 설정 및 첫 번째 항목 선택
-            // var sPath = "/ListItemSet('" + oProduct.Matnr + "')/toSelect";
-            // oSelect.bindAggregation("items", {
-            //     path: sPath,
-            //     template: new sap.ui.core.ListItem({
-            //         key: "{Matnr}",
-            //         text: "{Maktx}",
-            //         additionalText: {
-            //             parts: [{ path: 'Netpr' }, { path: 'Waers' }],
-            //             formatter: this.formatCurrency
-            //         }
-            //     }),
-            //     events: {
-            //         dataReceived: function() {
-            //             var aItems = oSelect.getItems();
-            //             if (aItems.length > 0) {
-            //                 var oFirstItem = aItems[0];
-            //                 var sKey = oFirstItem.getKey();
-            //                 var sText = oFirstItem.getText();
-            //                 var sAdditionalText = oFirstItem.getAdditionalText();
-            //                 var [Netpr, Waers] = sAdditionalText.split(" ");
-
-            //                 oCartModel.setProperty("/selectedProduct/selectedOption", {
-            //                     key: sKey,
-            //                     text: sText,
-            //                     additionalText: sAdditionalText,
-            //                     Netpr: Netpr,
-            //                     Waers: Waers
-            //                 });
-            //                 oSelect.setSelectedKey(sKey);
-            //             }
-            //         }
-            //     }
-            // });
-            
             // Set additional text based on the value of oProduct.Maktx
             switch (oProduct.Maktx) {
                 case "P-아르기닌":
@@ -244,8 +208,8 @@ sap.ui.define([
             var sLayout = oLayoutModel.getProperty("/layout");
 
             if (oEvent.name === "Phone") {
-                if (sLayout !== LayoutType.OneColumn) {
-                    oLayoutModel.setProperty("/layout", LayoutType.OneColumn);
+                if (sLayout !== LayoutType.TwoColumnsStartExpanded) {
+                    oLayoutModel.setProperty("/layout", LayoutType.TwoColumnsStartExpanded);
                 }
             } else if (oEvent.name === "Tablet") {
                 if (sLayout !== LayoutType.TwoColumnsStartExpanded) {
@@ -313,48 +277,20 @@ sap.ui.define([
 
         onAvatarPress: function() {
             var oCartModel = this.getView().getModel("cart");
-            var sKunnr = oCartModel.getProperty("/Kunnr");
+            var sKunnr = oCartModel.getProperty("/Kunnr").substr(0, 10);
             if (sKunnr) {
                 MessageBox.information("현재 로그인한 고객코드: " + sKunnr);
             }
+        },
+
+        onMain: function() {
+            var oRouter = UIComponent.getRouterFor(this);
+            oRouter.navTo("RouteMain", {}, true); // main view로 네비게이션
+            
+            // 해시 값을 유지한 채로 페이지를 새로고침
+            setTimeout(function() {
+                location.reload();
+            }, 500);
         }
-
-        // onSelectChange: function (oEvent) {
-        //     var oSelectedItem = oEvent.getParameter("selectedItem");
-        //     var sSelectedKey = oSelectedItem.getKey();
-        //     var sSelectedText = oSelectedItem.getText();
-        //     var sAdditionalText = oSelectedItem.getAdditionalText();
-        //     var [Netpr, Waers] = sAdditionalText.split(" "); // Assuming the formatter returns Netpr and Waers separated by space
-
-        //     var oCartModel = this.getView().getModel("cart");
-        //     var oSelectedProduct = oCartModel.getProperty("/selectedProduct");
-            
-        //     // Update selected product details
-        //     oSelectedProduct.selectedOption = {
-        //         key: sSelectedKey,
-        //         text: sSelectedText,
-        //         additionalText: sAdditionalText,
-        //         Netpr: Netpr,
-        //         Waers: Waers
-        //     };
-        
-        //     // Bind product details to the selected product in the cart model
-        //     oCartModel.setProperty("/selectedProduct", oSelectedProduct);
-        
-        //     // Optionally, if additional details need to be fetched from an OData service, implement the logic here
-        //     // Example: this._fetchProductDetails(sSelectedKey);
-        
-        //     // Update product details view
-        //     var oProductDetailsVBox = this.byId("productDetails");
-        //     oProductDetailsVBox.bindElement({
-        //         path: "/selectedProduct",
-        //         model: "cart"
-        //     });
-            
-        //     console.log(oSelectedProduct);
-
-        //     this._updateTotalPrice();
-        // }
-        
     });
 });

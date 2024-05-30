@@ -42,7 +42,12 @@
             <Page title="{cart>/selectedProduct/Maktx}">
                 <customHeader>
                     <Bar>
-                        
+                        <contentLeft>
+                            <Button
+                                icon="sap-icon://home"
+                                press="onMain"
+                            />
+                        </contentLeft>
                         <contentRight>
                             <Button
                                 icon="sap-icon://customer"
@@ -89,15 +94,18 @@
         <f:endColumnPages>
             <!-- 장바구니 페이지 -->
             <Page title="{i18n>cartTitle}">
-              <customHeader>
+            <customHeader>
                 <Bar>
                     <contentMiddle>
                         <Title text="{i18n>cartTitle}" level="H3"/>
                     </contentMiddle>
                     <contentRight>
                         <Button icon="sap-icon://edit" press="onEditCart" tooltip="Edit" visible="{= !${cart>/editMode} }"/>
-                    </contentRight>
-                </Bar>
+                        </contentRight>
+                    </Bar>
+            </customHeader>
+
+            <subHeader>
                 <Bar>
                     <contentLeft>
                         <Title text="구독개월 : "/>
@@ -108,7 +116,7 @@
                     </contentRight>
                     
                 </Bar>
-            </customHeader>
+            </subHeader>
                 <VBox>
                     <List
                         id="cartList"

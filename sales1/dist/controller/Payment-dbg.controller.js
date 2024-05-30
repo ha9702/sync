@@ -6,8 +6,9 @@ sap.ui.define([
     "sap/m/MessageItem",
     "sap/ui/core/message/Message",
     "sap/ui/core/MessageType",
-    "sap/ui/model/ValidateException"
-], function (Controller, JSONModel, MessageToast, MessagePopover, MessageItem, Message, MessageType, ValidateException) {
+    "sap/ui/model/ValidateException",
+    "sap/ui/core/Core"
+], function (Controller, JSONModel, MessageToast, MessagePopover, MessageItem, Message, MessageType, ValidateException, Core) {
     "use strict";
 
     return Controller.extend("sync.zec.sales1.controller.Payment", {
@@ -39,6 +40,26 @@ sap.ui.define([
             oCartModel.setProperty("/paymentTypeSelected", false);
             oCartModel.setProperty("/isCardInfoValid", false); // Initialize validation state
 
+            this._oMessageManager = sap.ui.getCore().getMessageManager();
+            this._oMessageManager.registerObject(this.getView(), true);
+
+            var oMessageModel = this._oMessageManager.getMessageModel();
+            this.getView().setModel(oMessageModel, "message");
+
+            this._oMessagePopover = new MessagePopover({
+                items: {
+                    path: "message>/",
+                    template: new MessageItem({
+                        title: "{message>message}",
+                        type: "{message>type}",
+                        description: "{message>description}"
+                    })
+                }
+            });
+            this.getView().byId("openMessagePopover").addDependent(this._oMessagePopover);
+
+            oMessageModel.attachPropertyChange(this.updateMessageCount.bind(this));
+
             // Daum Postcode API 스크립트 로드
             this._loadDaumPostcodeScript().then(() => {
                 console.log("Daum Postcode script loaded successfully");
@@ -46,29 +67,56 @@ sap.ui.define([
                 console.error("Failed to load Daum Postcode script:", error);
             });
 
-            // Initialize MessagePopover
-            this._oMessagePopover = sap.ui.xmlfragment(this.getView().getId(), "sync.zec.sales1.view.MessagePopover", this);
-            this.getView().addDependent(this._oMessagePopover);
-            this._oMessageManager = sap.ui.getCore().getMessageManager();
-            this._oMessageManager.registerObject(this.getView(), true);   
         },
 
-        addMessage: function (sMessage, sDescription, sType) {
-            var oMessage = new Message({
-                message: sMessage,
-                description: sDescription,
-                type: sType,
-                target: "/dummy",
-                processor: this.getView().getModel()
-            });
-            this._oMessageManager.addMessages(oMessage);
-            this._oMessagePopover.openBy(this.byId("openMessagePopover"));
+        updateMessageCount: function() {
+            var oMessageModel = this.getView().getModel("message");
+            var aMessages = oMessageModel.getData();
+            var iMessageCount = aMessages.length;
+            var oButton = this.getView().byId("openMessagePopover");
+
+            if (iMessageCount > 0) {
+                this._oMessagePopover.openBy(oButton);
+            } else {
+                this._oMessagePopover.close();
+            }
         },
 
         onMessagePopoverPress: function (oEvent) {
             this._oMessagePopover.openBy(oEvent.getSource());
         },
 
+        addMessage: function (sMessage, sDescription, sType, sTarget) {
+            var oMessageManager = this._oMessageManager;
+            var aMessages = oMessageManager.getMessageModel().getData();
+            
+            var bMessageExists = aMessages.some(function(oMsg) {
+                return oMsg.message === sMessage && oMsg.target === sTarget;
+            });
+
+            if (!bMessageExists) {
+                var oMessage = new Message({
+                    message: sMessage,
+                    description: sDescription,
+                    type: sType,
+                    target: sTarget,
+                    processor: this.getView().getModel()
+                });
+                oMessageManager.addMessages(oMessage);
+                this._oMessagePopover.openBy(this.getView().byId("openMessagePopover")); // 메시지 추가 후 Popover 자동 열기
+            }
+        },
+
+        removeMessage: function (sTarget) {
+            var oMessageManager = this._oMessageManager;
+            var aMessages = oMessageManager.getMessageModel().getData();
+
+            aMessages.filter(function(oMsg) {
+                return oMsg.target === sTarget;
+            }).forEach(function(oMsg) {
+                oMessageManager.removeMessages(oMsg);
+            });
+        },
 
         // New method to handle summary route pattern matched
         _onSummaryPatternMatched: function (oEvent) {
@@ -147,11 +195,15 @@ sap.ui.define([
             var oInput = oEvent.getSource();
             var sValue = oInput.getValue();
             var oRegex = /^[a-zA-Z가-힣]+$/;
+            var sTarget = oInput.getId();
+
             if (sValue.length >= 2 && oRegex.test(sValue)) {
                 oInput.setValueState("None");
+                this.removeMessage(sTarget);
             } else {
                 oInput.setValueState("Error");
-                this.addMessage("유효한 값을 입력하십시오.", "Cardholder's Name must be at least 2 characters long and contain only letters.", MessageType.Error);
+                oInput.setValueStateText(""); // 기본 영어 오류 메시지 제거
+                this.addMessage("유효한 값을 입력하십시오.", "Cardholder's Name must be at least 2 characters long and contain only letters.", MessageType.Error, sTarget);
             }
             this.validateCardInfo();
         },
@@ -161,13 +213,15 @@ sap.ui.define([
             var sValue = oInput.getValue();
             var oRegex = /^[0-9-]+$/;
             var isValid = sValue.length === 19 && oRegex.test(sValue); // 19 includes 16 digits + 3 hyphens
+            var sTarget = oInput.getId();
             
             if (isValid) {
                 oInput.setValueState("None");
+                this.removeMessage(sTarget);
             } else {
                 oInput.setValueState("Error");
-                oInput.setValueStateText("유효한 카드번호를 입력해주세요.");
-                this.addMessage("유효한 값을 입력하십시오.", "Card Number must be 19 characters long.", MessageType.Error);
+                oInput.setValueStateText(""); // 기본 영어 오류 메시지 제거
+                this.addMessage("유효한 카드번호를 입력해주세요.", "Card Number must be 19 characters long.", MessageType.Error, sTarget);
             }
             this.validateCardInfo();
         },
@@ -177,13 +231,15 @@ sap.ui.define([
             var sValue = oInput.getValue();
             var oRegex = /^[0-9]{3}$/;
             var isValid = oRegex.test(sValue);
+            var sTarget = oInput.getId();
             
             if (isValid) {
                 oInput.setValueState("None");
+                this.removeMessage(sTarget);
             } else {
                 oInput.setValueState("Error");
-                oInput.setValueStateText("3자리의 숫자만 입력해주세요.");
-                this.addMessage("유효한 값을 입력하십시오.", "Security Code must be 3 digits long.", MessageType.Error);
+                oInput.setValueStateText(""); // 기본 영어 오류 메시지 제거
+                this.addMessage("유효한 cvc를 입력해주세요.", "Security Code must be 3 digits long.", MessageType.Error, sTarget);
             }
             this.validateCardInfo();
         },
@@ -192,11 +248,12 @@ sap.ui.define([
             var oInput = oEvent.getSource();
             var sValue = oInput.getValue();
             var isValidFormat = /^(0[1-9]|1[0-2])\/\d{4}$/.test(sValue); // Check if the format is MM/YYYY
+            var sTarget = oInput.getId();
         
             if (!isValidFormat) {
                 oInput.setValueState("Error");
-                oInput.setValueStateText("유효한 날짜를 입력해주세요.");
-                this.addMessage("유효한 값을 입력하십시오.", "Expiration Date must be in MM/YYYY format.", MessageType.Error);
+                oInput.setValueStateText(""); // 기본 영어 오류 메시지 제거
+                this.addMessage("유효한 날짜를 입력해주세요.", "Expiration Date must be in MM/YYYY format.", MessageType.Error, sTarget);
                 return;
             }
         
@@ -210,10 +267,11 @@ sap.ui.define([
         
             if (nInputYear < nCurrentYear || (nInputYear === nCurrentYear && nInputMonth < nCurrentMonth)) {
                 oInput.setValueState("Error");
-                oInput.setValueStateText("유효기간이 만료되었습니다.");
-                this.addMessage("유효기간이 만료되었습니다.", "The card expiration date is invalid.", MessageType.Error);
+                // oInput.setValueStateText("유효기간이 만료되었습니다.");
+                this.addMessage("유효기간이 만료되었습니다.", "The card expiration date is invalid.", MessageType.Error, sTarget);
             } else {
                 oInput.setValueState("None");
+                this.removeMessage(sTarget);
             }
 
             this.validateCardInfo();
@@ -391,6 +449,7 @@ sap.ui.define([
             // 버튼 보이게 하기
             this.getView().byId("id3").setVisible(true);
             this.getView().byId("id4").setVisible(true);
+            this.getView().byId("id4").setEnabled(false);
         },
 
         _resetSteps: function () {
