@@ -6,6 +6,7 @@
     xmlns:l="sap.ui.layout"
     xmlns:f="sap.ui.layout.form"
     displayBlock="true">
+
     <Page>
         <headerContent>
             <Bar>
@@ -247,5 +248,12 @@
 	</steps>
     </Wizard>
 </content>
+	<footer>
+		<Bar>
+			<contentLeft>
+				<Button id="openMessagePopover" icon="sap-icon://message-popup" press="onMessagePopoverPress" />
+			</contentLeft>
+		</Bar>
+	</footer>
 </Page>
 </mvc:View>

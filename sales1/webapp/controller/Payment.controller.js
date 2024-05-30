@@ -2,11 +2,14 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
-    "sap/ui/model/ValidateException"
-], function (Controller,
-	JSONModel,
-	MessageToast,
-	ValidateException) {
+    "sap/m/MessagePopover",
+    "sap/m/MessageItem",
+    "sap/ui/core/message/Message",
+    "sap/ui/core/MessageType",
+    "sap/ui/model/ValidateException",
+    "sap/ui/core/Core",
+    "sap/ui/core/Element"
+], function (Controller, JSONModel, MessageToast, MessagePopover, MessageItem, Message, MessageType, ValidateException, Core, Element) {
     "use strict";
 
     return Controller.extend("sync.zec.sales1.controller.Payment", {
@@ -45,6 +48,76 @@ sap.ui.define([
                 console.error("Failed to load Daum Postcode script:", error);
             });
 
+            // Initialize MessagePopover
+
+            MessageToast.show('Press "Save" to trigger validation.');
+            this.createMessagePopover();
+        },
+
+        createMessagePopover: function () {
+            var that = this;
+            this._oMessagePopover = new MessagePopover({
+                activeTitlePress: function (oEvent) {
+                    var oItem = oEvent.getParameter("item"),
+                        oPage = that.oView.byId("messageHandlingPage"),
+                        oMessage = oItem.getBindingContext("message").getObject(),
+                        oControl = sap.ui.getCore().byId(oMessage.getControlId());
+
+                    if (oControl) {
+                        oPage.scrollToElement(oControl.getDomRef(), 200, [0, -100]);
+                        setTimeout(function(){
+                            oControl.focus();
+                        }, 300);
+                    }
+                },
+                items: {
+                    path: "message>/",
+                    template: new MessageItem({
+                        title: "{message>message}",
+                        subtitle: "{message>additionalText}",
+                        groupName: {parts: [{path: 'message>controlIds'}], formatter: this.getGroupName},
+                        activeTitle: {parts: [{path: 'message>controlIds'}], formatter: this.isPositionable},
+                        type: "{message>type}",
+                        description: "{message>message}"
+                    })
+                }
+            });
+            this.getView().byId("openMessagePopover").addDependent(this._oMessagePopover);
+            this._oMessageManager = sap.ui.getCore().getMessageManager();
+            this._oMessageManager.registerObject(this.getView(), true);
+        },
+
+        onMessagePopoverPress: function (oEvent) {
+            this._oMessagePopover.openBy(oEvent.getSource());
+        },
+
+        getGroupName: function (sControlId) {
+            var oControl = sap.ui.getCore().byId(sControlId);
+            if (oControl) {
+                var sFormSubtitle = oControl.getParent().getParent().getTitle().getText(),
+                    sFormTitle = oControl.getParent().getParent().getParent().getTitle().getText();
+
+                return sFormTitle + ", " + sFormSubtitle;
+            }
+        },
+
+        isPositionable: function (sControlId) {
+            return sControlId ? true : true;
+        },
+        addMessage: function (sMessage, sDescription, sType) {
+            var oMessage = new Message({
+                message: sMessage,
+                description: sDescription,
+                type: sType,
+                target: "/dummy",
+                processor: this.getView().getModel()
+            });
+            this._oMessageManager.addMessages(oMessage);
+            this._oMessagePopover.openBy(this.byId("openMessagePopover"));
+        },
+
+        onMessagePopoverPress: function (oEvent) {
+            this._oMessagePopover.openBy(oEvent.getSource());
         },
 
         // New method to handle summary route pattern matched
@@ -128,6 +201,7 @@ sap.ui.define([
                 oInput.setValueState("None");
             } else {
                 oInput.setValueState("Error");
+                this.addMessage("유효한 값을 입력하십시오.", "Cardholder's Name must be at least 2 characters long and contain only letters.", MessageType.Error);
             }
             this.validateCardInfo();
         },
@@ -143,6 +217,7 @@ sap.ui.define([
             } else {
                 oInput.setValueState("Error");
                 oInput.setValueStateText("유효한 카드번호를 입력해주세요.");
+                this.addMessage("유효한 값을 입력하십시오.", "Card Number must be 19 characters long.", MessageType.Error);
             }
             this.validateCardInfo();
         },
@@ -158,6 +233,7 @@ sap.ui.define([
             } else {
                 oInput.setValueState("Error");
                 oInput.setValueStateText("3자리의 숫자만 입력해주세요.");
+                this.addMessage("유효한 값을 입력하십시오.", "Security Code must be 3 digits long.", MessageType.Error);
             }
             this.validateCardInfo();
         },
@@ -170,6 +246,7 @@ sap.ui.define([
             if (!isValidFormat) {
                 oInput.setValueState("Error");
                 oInput.setValueStateText("유효한 날짜를 입력해주세요.");
+                this.addMessage("유효한 값을 입력하십시오.", "Expiration Date must be in MM/YYYY format.", MessageType.Error);
                 return;
             }
         
@@ -184,6 +261,7 @@ sap.ui.define([
             if (nInputYear < nCurrentYear || (nInputYear === nCurrentYear && nInputMonth < nCurrentMonth)) {
                 oInput.setValueState("Error");
                 oInput.setValueStateText("유효기간이 만료되었습니다.");
+                this.addMessage("유효기간이 만료되었습니다.", "The card expiration date is invalid.", MessageType.Error);
             } else {
                 oInput.setValueState("None");
             }

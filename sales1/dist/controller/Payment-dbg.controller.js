@@ -2,11 +2,12 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
+    "sap/m/MessagePopover",
+    "sap/m/MessageItem",
+    "sap/ui/core/message/Message",
+    "sap/ui/core/MessageType",
     "sap/ui/model/ValidateException"
-], function (Controller,
-	JSONModel,
-	MessageToast,
-	ValidateException) {
+], function (Controller, JSONModel, MessageToast, MessagePopover, MessageItem, Message, MessageType, ValidateException) {
     "use strict";
 
     return Controller.extend("sync.zec.sales1.controller.Payment", {
@@ -45,7 +46,29 @@ sap.ui.define([
                 console.error("Failed to load Daum Postcode script:", error);
             });
 
+            // Initialize MessagePopover
+            this._oMessagePopover = sap.ui.xmlfragment(this.getView().getId(), "sync.zec.sales1.view.MessagePopover", this);
+            this.getView().addDependent(this._oMessagePopover);
+            this._oMessageManager = sap.ui.getCore().getMessageManager();
+            this._oMessageManager.registerObject(this.getView(), true);   
         },
+
+        addMessage: function (sMessage, sDescription, sType) {
+            var oMessage = new Message({
+                message: sMessage,
+                description: sDescription,
+                type: sType,
+                target: "/dummy",
+                processor: this.getView().getModel()
+            });
+            this._oMessageManager.addMessages(oMessage);
+            this._oMessagePopover.openBy(this.byId("openMessagePopover"));
+        },
+
+        onMessagePopoverPress: function (oEvent) {
+            this._oMessagePopover.openBy(oEvent.getSource());
+        },
+
 
         // New method to handle summary route pattern matched
         _onSummaryPatternMatched: function (oEvent) {
@@ -128,6 +151,7 @@ sap.ui.define([
                 oInput.setValueState("None");
             } else {
                 oInput.setValueState("Error");
+                this.addMessage("유효한 값을 입력하십시오.", "Cardholder's Name must be at least 2 characters long and contain only letters.", MessageType.Error);
             }
             this.validateCardInfo();
         },
@@ -143,6 +167,7 @@ sap.ui.define([
             } else {
                 oInput.setValueState("Error");
                 oInput.setValueStateText("유효한 카드번호를 입력해주세요.");
+                this.addMessage("유효한 값을 입력하십시오.", "Card Number must be 19 characters long.", MessageType.Error);
             }
             this.validateCardInfo();
         },
@@ -158,6 +183,7 @@ sap.ui.define([
             } else {
                 oInput.setValueState("Error");
                 oInput.setValueStateText("3자리의 숫자만 입력해주세요.");
+                this.addMessage("유효한 값을 입력하십시오.", "Security Code must be 3 digits long.", MessageType.Error);
             }
             this.validateCardInfo();
         },
@@ -170,6 +196,7 @@ sap.ui.define([
             if (!isValidFormat) {
                 oInput.setValueState("Error");
                 oInput.setValueStateText("유효한 날짜를 입력해주세요.");
+                this.addMessage("유효한 값을 입력하십시오.", "Expiration Date must be in MM/YYYY format.", MessageType.Error);
                 return;
             }
         
@@ -184,6 +211,7 @@ sap.ui.define([
             if (nInputYear < nCurrentYear || (nInputYear === nCurrentYear && nInputMonth < nCurrentMonth)) {
                 oInput.setValueState("Error");
                 oInput.setValueStateText("유효기간이 만료되었습니다.");
+                this.addMessage("유효기간이 만료되었습니다.", "The card expiration date is invalid.", MessageType.Error);
             } else {
                 oInput.setValueState("None");
             }
