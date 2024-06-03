@@ -188,16 +188,52 @@ sap.ui.define([
             // Set additional text based on the value of oProduct.Maktx
             switch (oProduct.Maktx) {
                 case "P-아르기닌":
-                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : Special text for P-아르기닌");
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 아르기닌은 혈액 순환 개선과 혈관 건강을 지원하여 심혈관 질환 예방에 도움을 줍니다. 운동 수행 능력과 근육 회복을 향상시키며, 성장 호르몬 분비를 촉진합니다. 면역 기능 강화와 상처 치유를 돕고, 남성의 성 건강에도 유익합니다. 또한, 체내 노폐물 제거와 신진대사 촉진에 기여합니다.");
                     break;
                 case "P-비타민B플러스":
-                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : Details for P-비타민B플러스");
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 비타민B플러스는 에너지 생산과 신진대사를 촉진하여 활력을 높여줍니다. 신경계와 뇌 기능을 지원하며, 스트레스 감소와 면역력 증진에 도움을 줍니다. 피부, 머리카락, 눈, 간 건강을 유지하는 데 탁월합니다. 다양한 B군 비타민이 포함된 비타민 B 플러스로 전반적인 건강을 강화하세요.");
                     break;
                 case "P-밀크씨슬":
-                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : Information about P-밀크씨슬");
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 밀크씨슬은 강력한 간 보호 효과로 간 건강을 지원하며, 해독 작용을 촉진합니다. 항산화 성분인 실리마린이 풍부하여 간 세포 재생과 염증 감소에 탁월합니다. 알코올이나 독소로 인한 간 손상을 예방하고, 소화 건강까지 챙기세요. 밀크씨슬로 간 건강을 최상으로 유지하세요.");
+                    break;
+                case "P-오메가3":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 오메가-3는 심장 건강을 증진하고, 콜레스테롤 수치를 조절하여 심혈관 질환 예방에 탁월합니다. 염증을 감소시켜 관절 건강을 지원하며, 두뇌 기능과 인지 능력을 향상시킵니다. 또한, 시력을 보호하고 눈 건강을 유지하는 데 도움을 줍니다.");
+                    break;
+                case "P-프로바이오틱스":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 프로바이오틱스는 유익한 생균 원료로, 장내 건강을 최적화합니다. 소화 기능을 개선하고, 면역 체계를 강화하여 전반적인 건강을 증진합니다. 유익한 박테리아 균주가 장내 균형을 맞춰주어 변비와 설사 예방에 효과적입니다. 꾸준한 섭취로 소화 건강과 면역력을 높이세요.");
+                    break;
+                case "P-마그네슘":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 고품질 마그네슘을 원료로 하여 근육 경련 완화와 신경 기능을 최적화합니다. 에너지 생산과 뼈 건강을 지원하며, 피로 회복과 스트레스 감소에 탁월한 효과를 제공합니다. 심장 건강과 혈압 조절에도 도움을 주어 전반적인 웰빙을 촉진합니다. 하루 한 정으로 간편하게 활력과 건강을 유지합니다.");
+                    break;
+                case "P-루테인":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 루테인은 마리골드꽃 추출물에서 얻은 루테인과 지아잔틴을 주원료로 한 눈 건강 보조제입니다. 이 제품은 황반 색소 밀도를 유지하고, 눈의 피로를 줄이며, 나이 관련 황반 변성(AMD) 예방에 도움을 줍니다. 또한, 루테인은 항산화 작용을 통해 피부 톤 개선과 자외선으로 인한 피부 손상을 방지합니다.");
+                    break;
+                case "P-비오틴":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 비오틴은 고품질 비오틴을 원료로 한 보충제로, 건강한 머리카락, 피부, 손톱을 유지하는 데 도움을 줍니다. 비오틴은 에너지 대사와 탄수화물, 지방, 단백질의 대사를 촉진하여 전반적인 건강을 지원합니다. 또한, 비오틴은 신경 기능을 개선하고 혈당 조절에도 유익합니다.");
+                    break;
+                case "P-콘드로이친":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 콘드로이친은 연골을 구성하는 주성분으로 혈관이 없는 연골에 영양분을 공급하고, 연골세포 활성과 연골 성분의 합성 증가를 통해 연골을 보호하고 연골에 탄성력을 주는 역할을 한다. -> 관절 및 연골 건강에 도움을 줄 수 있음 관절통증, 관절기능, 보행기능, 관절너비, 관절경직시간 개선에 도움을 줍니다.");
+                    break;
+                case "P-멜라토닌":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 멜라토닌은 생체 리듬을 조절하여 수면을 촉진합니다. 이 영양제를 복용하면 잠들기 어려운 경우나 수면의 질이 낮은 경우에 도움이 될 수 있습니다. 수면 장애 개선, 스트레스 완화, 신경보호 효과에 도움을 줍니다.");
+                    break;
+                case "P-L-테아닌":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : L-테아닌은 녹차나 차에 풍부하게 함유된 아미노산으로, 스트레스를 완화하고 집중력을 높이며 수면을 개선하는 데 도움을 줄 수 있습니다. 정신적인 안정과 편안함을 유지하는 데 도움이 되고 스트레스 완화, 수면개선, 집중력 향상, 신경보호, 스트레스로 인한 신체적 증상 완화를 도와줍니다.");
+                    break;    
+                case "P-가르시니아":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 가르시니아는 캄보지아라는 열대 과일에서 추출한 천연 성분으로 부작용이 적습니다. HCA 성분이 지방 형성을 억제하고 식욕을 줄이는 데 도움을 주기에 체중 감소, 콜레스테롤 개선, 항산화 효과, 혈당 수치 안정화 등 다양한 건강 기능에 도움을 줍니다.");
+                    break;
+                case "P-징코민":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 징코민은 은행잎추출물로 혈액의 응집을 방지하고 혈관을 확장시켜 혈액순환을 개선한다. 말초동맥 순환장애(간헐성 파행증; 이따금 절뚝거림)의 치료, 어지러움, 혈관성 및 퇴행성 이명, 두통, 기억력 감퇴, 우울감 등의 치매성 증상을 수반하는 기질성 뇌기능 장애의 치료를 도움 줍니다.");
+                    break;
+                case "P-글루타치온":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 글루타치온은 강력한 항산화제로, 면역 체계를 강화하고 멜라닌 생성을 억제하여 피부 톤을 밝게 해줍니다. 또한, 피부 세포를 보호하여 피부 노화를 방지합니다.");
+                    break;
+                case "P-코큐텐":
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : 코큐텐은 세포 에너지 생성을 돕고 노화를 지연시키는 효능이 있습니다. 또한, 심혈관 건강을 개선하고 운동 성능을 향상시키는 데 기여합니다.");
                     break;
                 default:
-                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : Default additional text");
+                    oCartModel.setProperty("/selectedProduct/AdditionalText", "상품설명 : ");
                     break;
             }
 

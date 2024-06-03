@@ -1,0 +1,134 @@
+{
+  "_version": "1.17.0",
+  "sap.app": {
+    "id": "sync.zec.main",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.13.0",
+      "toolsId": "d898d6b5-b869-4cb9-84d6-4c7888c0927d"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZEC_SDG010_SRV/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.71.67",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.suite.ui.generic.template": {},
+        "sap.ui.comp": {},
+        "sap.ui.generic.app": {}, 
+        "sap.ui.table": {},
+        "sap.ushell": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "sync.zec.main.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {}
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+
+    "rootView": {
+      "viewName": "sync.zec.main.view.App",
+      "type": "XML",
+      "async": true,
+      "id":"MAIN"
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.f.routing.Router",
+        "viewType": "XML",
+        "viewPath": "sync.zec.main.view",
+        "controlId": "idFlexibleColumnLayout",
+        "transition": "slide",
+        "bypassed": { },
+        "async": true
+      },
+
+      "routes":[
+        {
+           "pattern": ":layout:",
+           "name": "master",
+           "target": [
+              "master",
+              "detail"
+           ]
+        },
+        {
+           "pattern": "detail/{vbeln}/{layout}",
+           "name": "detail",
+           "target": [
+              "master",
+              "detail"
+           ]
+        }
+  ],
+
+      "targets": {
+        "master": {
+           "viewName": "Master",
+           "controlAggregation": "beginColumnPages"
+        },
+        "detail": {
+           "viewName": "Detail",
+           "controlAggregation": "midColumnPages"
+        }
+     }
+}
+}
+}

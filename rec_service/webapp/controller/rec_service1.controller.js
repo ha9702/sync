@@ -65,7 +65,7 @@ sap.ui.define([
             var sGender = oEvent.getSource().getText();
             var oModel = this.getView().getModel("selectionModel");
             oModel.setProperty("/selectedGender", sGender);
-            
+            debugger;
             MessageToast.show("성별: " + sGender);
         },
         

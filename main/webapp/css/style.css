@@ -1,0 +1,13 @@
+/* Enter your custom styles here */
+
+.center-align {
+    text-align: center;
+}
+
+.right-align {
+    text-align: end;
+}
+
+.left-align {
+    text-align: left;
+}

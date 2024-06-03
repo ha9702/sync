@@ -1,0 +1,15 @@
+<mvc:View controllerName="sync.zec.main.controller.App"
+xmlns:html="http://www.w3.org/1999/xhtml"
+xmlns:mvc="sap.ui.core.mvc" 
+xmlns="sap.m"
+xmlns:f="sap.f"
+height="100%"
+displayBlock = "true">
+  
+<f:FlexibleColumnLayout
+    id="idFlexibleColumnLayout"
+    stateChange=".onStateChanged"  
+    backgroundDesign="Solid"
+    layout="{comp>/layout}"/>
+  
+</mvc:View>

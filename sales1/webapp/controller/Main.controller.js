@@ -88,6 +88,63 @@ sap.ui.define([
                 } else {
                     MessageToast.show("Cross Application Navigation 서비스가 제공되지 않습니다.");
                 }
+            },
+
+            onSearchOrder : function() {
+                var oCartModel = this.getView().getModel("cart");
+                var sKunnr = oCartModel.getProperty("/Kunnr");
+    
+                if (sap.ushell && sap.ushell.Container && sap.ushell.Container.getService) {
+                    var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
+    
+                    var hash = oCrossAppNavigator.hrefForExternal({
+                        target: {
+                            semanticObject: "synczecmain",
+                            action: "display"
+                        },
+                        params: {
+                            kunnr: sKunnr
+                        }
+                    });
+    
+                    var sUrl = window.location.href.split('#')[0] + hash;
+    
+                    var sPopupWindow = window.open(sUrl, "SurveyPopup", "width=800,height=600");
+                    if (!sPopupWindow) {
+                        MessageToast.show("팝업을 열 수 없습니다. 팝업 차단을 해제해 주세요.");
+                    } 
+                } else {
+                    MessageToast.show("Cross Application Navigation 서비스가 제공되지 않습니다.");
+                }
+            },
+
+            onChat: function() {
+                var oCartModel = this.getView().getModel("cart");
+                var sKunnr = oCartModel.getProperty("/Kunnr");
+    
+                if (sap.ushell && sap.ushell.Container && sap.ushell.Container.getService) {
+                    var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
+    
+                    var hash = oCrossAppNavigator.hrefForExternal({
+                        target: {
+                            semanticObject: "synczecchatting",
+                            action: "display"
+                        },
+                        params: {
+                            kunnr: sKunnr
+                        }
+                    });
+    
+                    var sUrl = window.location.href.split('#')[0] + hash;
+    
+                    var sPopupWindow = window.open(sUrl, "SurveyPopup", "width=800,height=600");
+                    if (!sPopupWindow) {
+                        MessageToast.show("팝업을 열 수 없습니다. 팝업 차단을 해제해 주세요.");
+                    } 
+                } else {
+                    MessageToast.show("Cross Application Navigation 서비스가 제공되지 않습니다.");
+                }
             }
+
         });
     });

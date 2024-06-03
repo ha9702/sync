@@ -3,33 +3,48 @@
     xmlns="sap.m"
     xmlns:l="sap.ui.layout">
     
-    <Page id="idMasterPage" class="noScroll">
+    <Page id="idMasterPage" class="noScroll" title="SYNCSYNC PILL">
         <headerContent>
             <Bar>
                 <contentLeft>
-                    <Image src="{imageModel>/path}/images/SSP.png" />
-                </contentLeft>
-                <contentMiddle>
-                    <Button text="설문조사 하러가기" press="onRec"/>
-                    <Button text="상담 하러가기" press="onChat"/>
-                </contentMiddle>
-                <contentRight>
-                    
-                </contentRight>
-            </Bar>
-        </headerContent>
+                    </contentLeft>
+                    <contentMiddle>
+                        <!-- <Button text="설문조사 하러가기" press="onRec"/> -->
+                        <!-- <Button text="상담 하러가기" press="onChat"/> -->
+                    </contentMiddle>
+                    <contentRight>
+                        <!-- <Button text="MY 주문조회" icon="sap-icon://sales-order" press="onSearchOrder" /> -->
+                    </contentRight>
+                </Bar>
+            </headerContent>
+            <Panel>
+            <content>
+                <HBox alignItems="Center" justifyContent="Center" fitContainer="true" >
+                <l:Grid defaultSpan="L4 M6 S12">
+                    <l:content>
+                    <Image id="idRec" src="{imageModel>/path}/images/Rec.png" press="onRec" width="100%" height="150px" />
+                
+                    <Image id="idChat" src="{imageModel>/path}/images/Chat.png" press="onChat" width="100%" height="150px" />
+                    <Image id="idSearchOrder" src="{imageModel>/path}/images/Order.png" press="onSearchOrder" width="100%" height="150px"/>
+                    </l:content>
+                </l:Grid>
+                </HBox>
+            </content>
+        </Panel>
+        <Panel>
         <content>
         <l:Grid id="idBotPanel" defaultSpan="XL6 L6 M6 S12" hSpacing="1" vSpacing="1">
             <l:content>
                 <HBox id="idProductSection1" justifyContent="Center" alignItems="Center">
-                    <Image src="{imageModel>/path}/images/Regular.png" width="100%" press="onRegularProductPress"/>
+                    <Image src="{imageModel>/path}/images/Regular.png" width="100%" press="onRegularProductPress" height="550px" />
                 </HBox>
                 <HBox id="idProductSection2" justifyContent="Center" alignItems="Center">
-                    <Image src="{imageModel>/path}/images/Sub.png" width="100%" press="onSubscriptionProductPress"/>
+                    <Image src="{imageModel>/path}/images/Sub.png" width="100%" press="onSubscriptionProductPress" height= "545px" />
                 </HBox>
             </l:content>
         </l:Grid>
         </content>
+        </Panel>
     </Page>
         
 </mvc:View>    

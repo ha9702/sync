@@ -1,0 +1,156 @@
+<mvc:View controllerName="sync.zec.main.controller.Detail"
+	xmlns="sap.uxap"
+	xmlns:m="sap.m"
+	xmlns:f="sap.f"
+	xmlns:form="sap.ui.layout.form"
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<ObjectPageLayout
+		id="ObjectPageLayout"
+		showTitleInHeaderContent="true"
+		alwaysShowContentHeader="false"
+		preserveHeaderStateOnScroll="false"
+		headerContentPinnable="true"
+		isChildPage="true"
+		upperCaseAnchorBar="false">
+
+        <headerTitle>
+			<ObjectPageDynamicHeaderTitle>
+                <expandedHeading>
+                    <m:Title text="{toName/Name1} 고객님의
+							       {path: 'Ordate', 
+								    type: 'sap.ui.model.odata.type.Date',
+								    formatOptions: { pattern: 'yyyy년 MM월 dd일' }} 구매내역 입니다."
+							 wrapping="true"
+							 class="sapUiSmallMarginEnd" />
+							 
+							 
+                </expandedHeading>
+
+                <snappedHeading>
+					<m:FlexBox wrap="Wrap" fitContainer="true" alignItems="Center">
+						<m:FlexBox wrap="NoWrap" fitContainer="true" alignItems="Center" class="sapUiTinyMarginEnd">
+							<f:Avatar
+								src="{imageModel>/path}/images/human.png"
+								displaySize="L"
+								displayShape="Square"
+								class="sapUiTinyMarginEnd"/>
+							<m:Title text="{toName/Name1} 님의 구매내역" wrapping="true"/>
+						</m:FlexBox>
+					</m:FlexBox>
+				</snappedHeading>
+            </ObjectPageDynamicHeaderTitle>
+        </headerTitle>
+
+        <headerContent>
+			<m:FlexBox wrap="Wrap" fitContainer="true" alignItems="Stretch">
+				<f:Avatar
+				    src="{imageModel>/path}/images/SSP.png"
+					displaySize="XL"
+					displayShape="Square"
+					class="sapUiTinyMarginEnd">
+				</f:Avatar>
+				<m:VBox justifyContent="Center" class="sapUiSmallMarginEnd">
+					<m:Label text="주문 번호 | {Vbeln}"/>
+				</m:VBox>
+				<m:VBox justifyContent="Center" class="sapUiSmallMarginEnd">
+					<m:Label text="구분 | {path: 'Subcmon', formatter: '.formatSubcmon'}"/>
+				</m:VBox>
+				<m:VBox justifyContent="Center" class="sapUiSmallMarginEnd">
+					<m:Label text="주문 일자 | {path: 'Ordate', 
+                             type: 'sap.ui.model.odata.type.Date',
+                             formatOptions: { pattern: 'yyyy년 MM월 dd일' }}"
+                             class="center-align"/>
+				</m:VBox>
+			</m:FlexBox>
+		</headerContent>
+
+        <sections>
+			<ObjectPageSection title="공지 사항">
+				<subSections>
+					<ObjectPageSubSection>
+						<blocks>
+							<form:SimpleForm
+								maxContainerCols="2"
+								editable="false"
+								layout="ResponsiveGridLayout"
+								labelSpanL="12"
+								labelSpanM="12"
+								emptySpanL="0"
+								emptySpanM="0"
+								columnsL="1"
+								columnsM="1">
+							</form:SimpleForm>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+			<ObjectPageSection title="구매 내역">
+				<subSections>
+					<ObjectPageSubSection>
+						<blocks>
+							<m:Table
+								id="idOrderitemTable"
+								items="{
+									path: 'toConnection',
+									parameters: {
+										expand: 'toProduct'
+									}
+								}">
+								<m:columns>
+									<m:Column width="12%"  hAlign="Center" minScreenWidth="30rem" demandPopin="true" popinDisplay="Inline">
+										<m:Text text="{i18n>labelInvnr}"
+												class="center-align"/>
+                                    </m:Column>
+									<m:Column width="25%"  hAlign="Center">
+										<m:Text text="{i18n>labelMaktx}"
+												class="center-align"/>
+                                    </m:Column>
+									<m:Column width="auto" hAlign="Center" minScreenWidth="30rem" demandPopin="true" popinDisplay="Inline" >
+										<m:Text text="{i18n>labelNetpr}"
+												class="center-align"/>
+                                    </m:Column>
+									<m:Column width="auto"  hAlign="Center">
+										<m:Text text="{i18n>labelMenge}"
+												class="center-align"/>
+                                    </m:Column>
+									<m:Column  hAlign="Center">
+										<m:Text text="{i18n>labelAmount2}"
+												class="center-align"/>
+                                    </m:Column>
+								</m:columns>
+								<m:items>
+									<m:ColumnListItem type="Navigation">
+										<m:cells>
+											<!-- <m:ObjectIdentifier title="{Vbeln}"  /> -->
+                                            <m:ObjectIdentifier title="{Invnr}" />
+											<!-- <m:ObjectAttribute text="{path: 'Invnr', formatter: '.formatInvnr'}"/> -->
+											<m:ObjectAttribute text="{toProduct/Maktx}" /> <!--상품명-->
+
+											<!-- 개당 금액 -->
+											<m:ObjectNumber number="{
+												parts: [{path:'Netpr'},{path:'Waers'}],
+												type : 'sap.ui.model.type.Currency',
+												formatOptions: { showMeasure: false }}"
+											unit= "원"/>
+
+											<m:ObjectNumber number="{Menge}"
+															unit="개" />
+										    
+											<!--판매 금액-->
+											<m:ObjectNumber number="{
+												parts: [{path:'Amount'},{path:'Waers'}],
+												type : 'sap.ui.model.type.Currency',
+                                            	formatOptions: { showMeasure: false }}"
+                                    		unit= "원"/>
+										</m:cells>
+									</m:ColumnListItem>
+								</m:items>
+							</m:Table>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+		</sections>
+    </ObjectPageLayout>
+</mvc:View>
