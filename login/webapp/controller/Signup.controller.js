@@ -4,97 +4,115 @@ sap.ui.define([
     "sap/ui/model/odata/v2/ODataModel",
     "sap/ui/thirdparty/jquery"
 ],
-    function (Controller,
-	MessageBox,
-	ODataModel, jquery) {
-        "use strict";
+function (Controller, MessageBox, ODataModel, jquery) {
+    "use strict";
 
-        return Controller.extend("sync.zec.login.controller.Signup", {
-            onInit: function () {
-                // var oModel = new ODataModel("sap/opu/odata/sap/YE04_LOGIN/");
-                // this.getView().setModel(oModel);
-                // Daum Postcode API 로드
-                jQuery.sap.includeScript("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
-        
-            },
+    return Controller.extend("sync.zec.login.controller.Signup", {
+        onInit: function () {
+            jQuery.sap.includeScript("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
 
-            onSignUpSubmit: function () {
-                var signupId = this.byId("signupIdInput").getValue();
-                var signupPassword = this.byId("signupPasswordInput").getValue();
-                var signupName = this.byId("signupNameInput").getValue();
+            var oIdInput = this.byId("signupIdInput");
+            var oPwInput = this.byId("signupPasswordInput");
+            oIdInput.attachLiveChange(this._onIdInputChange, this);
+            oPwInput.attachLiveChange(this._onPwInputChange, this);
+        },
 
+        _onIdInputChange: function (oEvent) {
+            var oInput = oEvent.getSource();
+            var sValue = oInput.getValue();
+            var oErrorText = this.byId("signupIdError");
 
-                // var signupAddress = this.byId("signupAddressInput").getValue();
-                var signupPostcode = this.byId("sample6_postcode").getValue();
-                var signupAddress = this.byId("sample6_address").getValue();
-                var signupDetailAddress = this.byId("sample6_detailAddress").getValue();
-                var fullAddress = "(" + signupPostcode + ")" + " " + signupAddress + " " + signupDetailAddress;
+            var sValidValue = sValue.replace(/[^a-zA-Z0-9]/g, '');
 
-
-                var signupEmail = this.byId("signupEmailInput").getValue();
-                var signupPhone = this.byId("signupPhoneInput").getValue();
-    
-                if (!signupId || !signupPassword) {
-                    MessageBox.error("ID와 비밀번호는 필수 입력 사항입니다.");
-                    return;
-                } else {
-                    
-                    // 여기에 회원가입 로직을 추가합니다.
-                    // MessageBox.success("회원가입이 완료되었습니다!");
-                    var oModel = this.getView().getModel();
-                    var oData = {
-                        Custid: signupId,
-                        Custpw: signupPassword,
-                        Name1: signupName,
-                        // Addnr: signupAddress,
-                        Addnr: fullAddress,
-                        Cemail: signupEmail,
-                        Telf1: signupPhone
-                    };
-
-                    oModel.create("/CustomerSet", oData, {
-                        success: function () {
-                            MessageBox.success("회원가입이 완료되었습니다!");
-                        },
-                        error: function (oError) {
-                            MessageBox.error("이미 가입한 회원입니다. 로그인 화면으로 이동해주세요.");
-                            
-                            // this.getOwnerComponent().getRouter().navTo("RouteMain");
-                        }
-                    });
-
-                }
-                
-                
-            },
-
-            onGoToLogin: function ( ) {
-                // 로그인 페이지로 이동
-                this.getOwnerComponent().getRouter().navTo("RouteMain");
-            },
-
-
-            onSearchPostcode: function () {
-                var that = this;
-                new daum.Postcode({
-                    oncomplete: function (data) {
-                        var addr = ''; // 주소 변수
-    
-                        // 사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-                        if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-                            addr = data.roadAddress;
-                        } else { // 사용자가 지번 주소를 선택했을 경우(J)
-                            addr = data.jibunAddress;
-                        }
-    
-                        // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                        that.byId('sample6_postcode').setValue(data.zonecode);
-                        that.byId("sample6_address").setValue(addr);
-                        // 커서를 상세주소 필드로 이동한다.
-                        that.byId("sample6_detailAddress").focus();
-                    }
-                }).open();
+            if (sValue !== sValidValue) {
+                oInput.setValue(sValidValue);
+                oInput.addStyleClass("inputError");
+                oErrorText.addStyleClass("errorMessageVisible");
+            } else {
+                oInput.removeStyleClass("inputError");
+                oErrorText.removeStyleClass("errorMessageVisible");
             }
+        },
 
-        });
+        _onPwInputChange: function (oEvent) {
+            var oInput = oEvent.getSource();
+            var sValue = oInput.getValue();
+            var oErrorText = this.byId("signupPwError");
+
+            // 한글을 포함하지 않도록 유효성 검사
+            var sValidValue = sValue.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g, '');
+
+            if (sValue !== sValidValue) {
+                oInput.setValue(sValidValue);
+                oInput.addStyleClass("inputError");
+                oErrorText.addStyleClass("errorMessageVisible");
+            } else {
+                oInput.removeStyleClass("inputError");
+                oErrorText.removeStyleClass("errorMessageVisible");
+            }
+        },
+
+        onSignUpSubmit: function () {
+            var signupId = this.byId("signupIdInput").getValue();
+            var signupPassword = this.byId("signupPasswordInput").getValue();
+            var signupName = this.byId("signupNameInput").getValue();
+            var signupPostcode = this.byId("sample6_postcode").getValue();
+            var signupAddress = this.byId("sample6_address").getValue();
+            var signupDetailAddress = this.byId("sample6_detailAddress").getValue();
+            var fullAddress = "(" + signupPostcode + ")" + " " + signupAddress + " " + signupDetailAddress;
+            var signupEmail = this.byId("signupEmailInput").getValue();
+            var signupPhone = this.byId("signupPhoneInput").getValue();
+
+            if (!signupId || !signupPassword) {
+                MessageBox.error("ID와 비밀번호는 필수 입력 사항입니다.");
+                return;
+            } else if (/[^a-zA-Z0-9]/.test(signupId)) {
+                MessageBox.error("ID는 영문자와 숫자만 포함할 수 있습니다.");
+                return;
+            } else if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(signupPassword)) {
+                MessageBox.error("비밀번호는 한글을 포함할 수 없습니다.");
+                return;
+            } else {
+                var oModel = this.getView().getModel();
+                var oData = {
+                    Custid: signupId,
+                    Custpw: signupPassword,
+                    Name1: signupName,
+                    Addnr: fullAddress,
+                    Cemail: signupEmail,
+                    Telf1: signupPhone
+                };
+
+                oModel.create("/CustomerSet", oData, {
+                    success: function () {
+                        MessageBox.success("회원가입이 완료되었습니다!");
+                    },
+                    error: function (oError) {
+                        MessageBox.error("이미 가입한 회원입니다. 로그인 화면으로 이동해주세요.");
+                    }
+                });
+            }
+        },
+
+        onGoToLogin: function () {
+            this.getOwnerComponent().getRouter().navTo("RouteMain");
+        },
+
+        onSearchPostcode: function () {
+            var that = this;
+            new daum.Postcode({
+                oncomplete: function (data) {
+                    var addr = '';
+                    if (data.userSelectedType === 'R') {
+                        addr = data.roadAddress;
+                    } else {
+                        addr = data.jibunAddress;
+                    }
+                    that.byId('sample6_postcode').setValue(data.zonecode);
+                    that.byId("sample6_address").setValue(addr);
+                    that.byId("sample6_detailAddress").focus();
+                }
+            }).open();
+        }
     });
+});

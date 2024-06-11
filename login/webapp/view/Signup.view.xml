@@ -24,9 +24,11 @@
 
                         <Label text="아이디 :" required="true" />
                         <Input id="signupIdInput" placeholder="id" class="sapUiNoMarginTop" />
+                        <Text id="signupIdError" text="영문/숫자만 입력 가능합니다." class="errorMessage" />
 
                         <Label text="비밀번호 :" required="true" />
                         <Input id="signupPasswordInput" type="Password" placeholder="Password" class="sapUiSmallMarginBottom" />
+                        <Text id="signupPwError" text="영문/숫자/특수문자 만 입력 가능합니다." class="errorMessage" />
                         
                         <Label text="주소 :" />
                         <FlexBox direction="Row" class="sapUiNoMargin">

@@ -16,7 +16,7 @@
                         
                         <CustomListItem type="Active" press="onSelectProduct">
                             <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiNoMargin">
-                                <Image src="{imageModel>/path}/images/{Matnr}.jpg" width="80px" height="100px" class="sapUiTinyMarginEnd"/>
+                                <Image src="{imageModel>/path}/images/{Matnr}.jpg" width="80px" height="100px" class="sapUiTinyMarginEnd" />
                                 <VBox class="sapUiNoMargin" width="100%">
                                     <Title text="{Maktx}" level="H5" class="sapUiNoMargin"/>
                                     <Text text="판매중"  class="sapUiNoMargin salesText"/>

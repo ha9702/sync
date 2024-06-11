@@ -126,25 +126,6 @@ sap.ui.define([
         _callKakaoPayAPI: function (oSummaryData) {
             console.log("Calling KakaoPay API with data:", oSummaryData);
 
-
-            // curl --location 'https://open-api.kakaopay.com/online/v1/payment/ready' \
-            // --header 'Authorization: SECRET_KEY ${SECRET_KEY}' \
-            // --header 'Content-Type: application/json' \
-            // --data '{
-            //         "cid": "TC0ONETIME",
-            //         "partner_order_id": "partner_order_id",
-            //         "partner_user_id": "partner_user_id",
-            //         "item_name": "초코파이",
-            //         "quantity": "1",
-            //         "total_amount": "2200",
-            //         "vat_amount": "200",
-            //         "tax_free_amount": "0",
-            //         "approval_url": "https://developers.kakao.com/success",
-            //         "fail_url": "https://developers.kakao.com/fail",
-            //         "cancel_url": "https://developers.kakao.com/cancel"
-            //     }'
-
-
             var totalAmount = oSummaryData.toItem.reduce(function (sum, item) {
                 return sum + (parseFloat(item.Netpr) * parseFloat(item.Menge));
             }, 0);

@@ -1,1 +1,11 @@
-/* Enter your custom styles here */
+.inputError {
+    border: 1px solid red;
+}
+.errorMessage {
+    color: red;
+    display: none;
+    font-size: 0.8rem;
+}
+.errorMessageVisible {
+    display: block;
+}
